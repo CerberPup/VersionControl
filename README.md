@@ -1,4 +1,4 @@
-# VersionControll
+# VersionControl
 ## Todo:
 - [ ] Gui using QT library
 - [ ] Ability to use system specific diff
