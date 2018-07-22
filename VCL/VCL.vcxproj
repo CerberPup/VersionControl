@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="modifiedFileSystemModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="mainwindow.h">
@@ -214,6 +215,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <QtMoc Include="modifiedFileSystemModel.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\debug;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\release;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
+    </QtMoc>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -4,8 +4,8 @@
 MainWindow::MainWindow(int argc, char *argv[],QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-	directoryModel(new QFileSystemModel(this)),
-	directoryProxyModel(new QSortFilterProxyModel)
+	directoryModel(new ModifiedFileSystemModel(this)),
+	directoryProxyModel(new QSortFilterProxyModel())
 {
     ui->setupUi(this);
 	ui->DirectoryTreeView->setModel(directoryProxyModel);
