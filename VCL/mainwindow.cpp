@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(int argc, char *argv[],QWidget *parent) :
     QMainWindow(parent),
@@ -7,6 +8,16 @@ MainWindow::MainWindow(int argc, char *argv[],QWidget *parent) :
 	directoryModel(new ModifiedFileSystemModel(this)),
 	directoryProxyModel(new QSortFilterProxyModel())
 {
+	QMessageBox msgBox;
+#ifdef _WIN32
+	
+	msgBox.setText("Windows");
+	
+#else
+	msgBox.setText("Unix");
+#endif
+
+	msgBox.exec();
     ui->setupUi(this);
 	ui->DirectoryTreeView->setModel(directoryProxyModel);
 	directoryProxyModel->setSourceModel(directoryModel);
