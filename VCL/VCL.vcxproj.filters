@@ -72,5 +72,8 @@
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="ControlManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

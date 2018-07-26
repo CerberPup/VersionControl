@@ -214,6 +214,7 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ControlManager.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
     <QtMoc Include="modifiedFileSystemModel.h">
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\debug;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>

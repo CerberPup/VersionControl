@@ -8,6 +8,7 @@ class ModifiedFileSystemModel : public QFileSystemModel
 	Q_OBJECT
 
 public:
+	QVariant data(const QModelIndex& index, int role) const;
 	ModifiedFileSystemModel(QObject *parent);
 	~ModifiedFileSystemModel();
 };
