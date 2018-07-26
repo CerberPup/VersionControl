@@ -7,8 +7,7 @@
 #endif
 
 #include <QString>
-#include "ControlManager.h"
-#include <Qdir>
+#include <QDir>
 
 namespace ControlManager
 {

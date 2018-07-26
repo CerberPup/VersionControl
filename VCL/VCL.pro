@@ -30,7 +30,8 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-        modifiedFileSystemModel.h
+        modifiedFileSystemModel.h \
+	ControlManager.h
 
 FORMS += \
         mainwindow.ui
