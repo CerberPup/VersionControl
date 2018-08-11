@@ -23,8 +23,8 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	ui->OldListView->setModelColumn(1);
 	ui->NewListView->setModel(m_diffModel);
 	ui->NewListView->setModelColumn(0);
-	ui->NewListView->setItemDelegate(new CustomDelegate(ui->NewListView, ui->NewListView, ui->OldListView));
-	ui->OldListView->setItemDelegate(new CustomDelegate(ui->OldListView, ui->NewListView, ui->OldListView));
+	ui->NewListView->setItemDelegate(new CustomDelegate(ui->NewListView));
+	ui->OldListView->setItemDelegate(new CustomDelegate(ui->OldListView));
 
 #ifdef _WIN32
 	ControlManager::initVersionControl(QString("D:/at"));
@@ -53,6 +53,12 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	connect(ui->splitter_2, SIGNAL(splitterMoved(int, int)), this, SLOT(onSplitterMove(int, int)));
 	connect(ui->splitter_3, SIGNAL(splitterMoved(int, int)), this, SLOT(onSplitterMove(int, int)));
 	onSplitterMove(0, 0);
+
+	contextMenu = new QMenu(ui->DirectoryTreeView);
+	contextMenu->addAction("Set as Root", this, SLOT(onChangeRoot()));
+	contextMenu->addAction("Clear Root",this,SLOT(onClearRoot()));
+	ui->DirectoryTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->DirectoryTreeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
 }
 
 MainWindow::~MainWindow()
@@ -69,4 +75,21 @@ void MainWindow::onSplitterMove(int /*pos*/, int /*index*/)
 {
 	m_diffModel->setOldFileViewSize(ui->OldListView->size());
 	m_diffModel->setNewFileViewSize(ui->NewListView->size());
+}
+
+void MainWindow::onChangeRoot()
+{
+	ui->DirectoryTreeView->setRootIndex(m_directoryModel->setRootPath(ui->DirectoryTreeView->currentIndex().data(Qt::UserRole).toString()));
+}
+void MainWindow::onClearRoot()
+{
+	ui->DirectoryTreeView->setRootIndex(m_directoryModel->setRootPath(""));
+}
+
+void MainWindow::onCustomContextMenu(const QPoint &point)
+{
+	QModelIndex index = ui->DirectoryTreeView->indexAt(point);
+	if (index.isValid()) {
+		contextMenu->exec(ui->DirectoryTreeView->mapToGlobal(point));
+	}
 }

@@ -21,7 +21,11 @@ public:
 	void resizeEvent(QResizeEvent* event);
 public slots:
 	void onSplitterMove(int pos, int index);
+	void onCustomContextMenu(const QPoint &point);
+	void onChangeRoot();
+	void onClearRoot();
 private:
+	QMenu * contextMenu;
     Ui::MainWindow *ui;
 	DiffModel* m_diffModel;
 	ModifiedFileSystemModel* m_directoryModel;

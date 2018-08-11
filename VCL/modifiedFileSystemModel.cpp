@@ -30,6 +30,10 @@ QVariant ModifiedFileSystemModel::data(const QModelIndex& index, int role) const
 		return item;
 	}
 		break;
+	case Qt::UserRole:
+	{
+		return filePath(index);
+	}
 	default:
 		return QFileSystemModel::data(index, role);
 		break;

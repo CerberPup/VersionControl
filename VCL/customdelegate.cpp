@@ -2,11 +2,12 @@
 #include "diffmodel.h"
 #include "dataObjects.h"
 
-CustomDelegate::CustomDelegate(QObject *parent, QListView* _w1, QListView* _w2)
+CustomDelegate::CustomDelegate(QObject *parent)
 	: QStyledItemDelegate(parent)
+	, m_font (QFont("Arial"))
+	, m_fontMetrics(QFontMetrics(QFont("Arial")))
 {
-	w1 = _w1;
-	w2 = _w2;
+
 }
 
 CustomDelegate::~CustomDelegate()
@@ -22,7 +23,7 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 {
 	painter->save();
 	painter->setClipping(false);
-	painter->setFont(QFont("Arial"));
+	painter->setFont(m_font);
 	DT::diffRowData data = index.data().value<DT::diffRowData>();
 	painter->setPen(Qt::NoPen);
 	if (option.state & QStyle::State_Selected)
@@ -35,27 +36,46 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 	}
 	if (option.state & QStyle::StateFlag::State_MouseOver)
 	{
-		painter->setBrush(Qt::white);
+		painter->setBrush(Qt::lightGray);
 	}
 	else
+	{
+		painter->setBrush(Qt::white);
+	}
+	if(data[0].first!= DT::lineStatus::Unchanged|| data.size()>1)
+		painter->setBrush(QColor(220,220,220));
+	if (option.state & QStyle::StateFlag::State_MouseOver)
 	{
 		painter->setBrush(Qt::lightGray);
 	}
 	painter->drawRect(option.rect);
-	QRect re = option.rect;
-	re.setRight(5000);
-	if (data[0].first==DT::lineStatus::Added)
+	QRect paintArea = option.rect;
+	paintArea.adjust(2, 0, 0, 0);
+	QRect prev(paintArea.topLeft(),QSize(0,0));
+	QSize viewSize = index.data(Qt::UserRole).toSize();
+	for (size_t i = 0; i < data.size(); i++)
 	{
-		painter->setBrush(QColor(255, 255, 200));
-		painter->drawRect(option.rect);
-		painter->setPen(QColor(25, 60, 25));
-		painter->drawText(option.rect, data[0].second);
-	}
-	else
-	{
-		painter->setPen(Qt::black);
-			
-		painter->drawText(option.rect, data[0].second);
+		QRect tmp = data.lineTextSize(m_fontMetrics, viewSize, i);
+		paintArea = QRect(paintArea.left(), paintArea.top() + prev.height(), tmp.width(), tmp.height());
+		prev = tmp;
+		prev.adjust(0, 0, 0, 0);
+		std::pair<DT::lineStatus, QString> var = data[i];
+		QString toDisplay = var.second;
+		if (var.first == DT::lineStatus::Added)
+		{
+			painter->setPen(QColor(50, 150, 50));
+			painter->drawText(paintArea, toDisplay);
+		}
+		else if (var.first == DT::lineStatus::Removed)
+		{
+			painter->setPen(QColor(150, 50, 50));
+			painter->drawText(paintArea, toDisplay);
+		}
+		else
+		{
+			painter->setPen(Qt::black);
+			painter->drawText(paintArea, toDisplay);
+		}
 	}
 
 	painter->restore();

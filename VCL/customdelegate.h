@@ -9,10 +9,10 @@ class CustomDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
 private:
-	QListView * w1;
-	QListView * w2;
+	QFontMetrics m_fontMetrics;
+	QFont m_font;
 public:
-	CustomDelegate(QObject *parent, QListView* w1, QListView* w2);
+	CustomDelegate(QObject *parent);
 	~CustomDelegate();
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
