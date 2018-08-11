@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QColumnView>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QListView>
@@ -35,11 +34,13 @@ public:
     QAction *actionCommit_Changes;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
-    QSplitter *splitter_2;
+    QSplitter *splitter_3;
     QTreeView *DirectoryTreeView;
+    QSplitter *splitter_2;
+    QListView *CommitListView;
     QSplitter *splitter;
-    QListView *CommitlistView;
-    QColumnView *columnView;
+    QListView *OldListView;
+    QListView *NewListView;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuOption;
@@ -51,7 +52,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(782, 556);
+        MainWindow->resize(719, 524);
         actionOpen = new QAction(MainWindow);
         actionOpen->setObjectName(QStringLiteral("actionOpen"));
         actionExit = new QAction(MainWindow);
@@ -66,65 +67,59 @@ public:
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        splitter_2 = new QSplitter(centralWidget);
-        splitter_2->setObjectName(QStringLiteral("splitter_2"));
-        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-        sizePolicy.setHorizontalStretch(0);
-        sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(splitter_2->sizePolicy().hasHeightForWidth());
-        splitter_2->setSizePolicy(sizePolicy);
-        splitter_2->setOrientation(Qt::Horizontal);
-        splitter_2->setChildrenCollapsible(false);
-        DirectoryTreeView = new QTreeView(splitter_2);
+        splitter_3 = new QSplitter(centralWidget);
+        splitter_3->setObjectName(QStringLiteral("splitter_3"));
+        splitter_3->setOrientation(Qt::Horizontal);
+        splitter_3->setChildrenCollapsible(false);
+        DirectoryTreeView = new QTreeView(splitter_3);
         DirectoryTreeView->setObjectName(QStringLiteral("DirectoryTreeView"));
         DirectoryTreeView->setEnabled(true);
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Expanding);
-        sizePolicy1.setHorizontalStretch(4);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(DirectoryTreeView->sizePolicy().hasHeightForWidth());
-        DirectoryTreeView->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(4);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(DirectoryTreeView->sizePolicy().hasHeightForWidth());
+        DirectoryTreeView->setSizePolicy(sizePolicy);
         DirectoryTreeView->setMinimumSize(QSize(100, 200));
         DirectoryTreeView->setMaximumSize(QSize(16777215, 16777215));
         DirectoryTreeView->setSizeIncrement(QSize(0, 0));
         DirectoryTreeView->setBaseSize(QSize(0, 0));
-        splitter_2->addWidget(DirectoryTreeView);
+        splitter_3->addWidget(DirectoryTreeView);
         DirectoryTreeView->header()->setVisible(true);
+        splitter_2 = new QSplitter(splitter_3);
+        splitter_2->setObjectName(QStringLiteral("splitter_2"));
+        splitter_2->setOrientation(Qt::Vertical);
+        splitter_2->setChildrenCollapsible(false);
+        CommitListView = new QListView(splitter_2);
+        CommitListView->setObjectName(QStringLiteral("CommitListView"));
+        splitter_2->addWidget(CommitListView);
         splitter = new QSplitter(splitter_2);
         splitter->setObjectName(QStringLiteral("splitter"));
-        QSizePolicy sizePolicy2(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
-        sizePolicy2.setHorizontalStretch(2);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(splitter->sizePolicy().hasHeightForWidth());
-        splitter->setSizePolicy(sizePolicy2);
-        splitter->setMinimumSize(QSize(200, 200));
-        splitter->setFrameShadow(QFrame::Plain);
-        splitter->setOrientation(Qt::Vertical);
-        splitter->setOpaqueResize(true);
-        splitter->setHandleWidth(5);
+        splitter->setOrientation(Qt::Horizontal);
         splitter->setChildrenCollapsible(false);
-        CommitlistView = new QListView(splitter);
-        CommitlistView->setObjectName(QStringLiteral("CommitlistView"));
-        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(CommitlistView->sizePolicy().hasHeightForWidth());
-        CommitlistView->setSizePolicy(sizePolicy3);
-        CommitlistView->setMinimumSize(QSize(0, 142));
-        splitter->addWidget(CommitlistView);
-        columnView = new QColumnView(splitter);
-        columnView->setObjectName(QStringLiteral("columnView"));
-        sizePolicy3.setHeightForWidth(columnView->sizePolicy().hasHeightForWidth());
-        columnView->setSizePolicy(sizePolicy3);
-        columnView->setMinimumSize(QSize(0, 100));
-        splitter->addWidget(columnView);
+        OldListView = new QListView(splitter);
+        OldListView->setObjectName(QStringLiteral("OldListView"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(OldListView->sizePolicy().hasHeightForWidth());
+        OldListView->setSizePolicy(sizePolicy1);
+        OldListView->setMinimumSize(QSize(0, 142));
+        splitter->addWidget(OldListView);
+        NewListView = new QListView(splitter);
+        NewListView->setObjectName(QStringLiteral("NewListView"));
+        sizePolicy1.setHeightForWidth(NewListView->sizePolicy().hasHeightForWidth());
+        NewListView->setSizePolicy(sizePolicy1);
+        NewListView->setMinimumSize(QSize(0, 100));
+        splitter->addWidget(NewListView);
         splitter_2->addWidget(splitter);
+        splitter_3->addWidget(splitter_2);
 
-        gridLayout->addWidget(splitter_2, 0, 0, 1, 1);
+        gridLayout->addWidget(splitter_3, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 782, 21));
+        menuBar->setGeometry(QRect(0, 0, 719, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuOption = new QMenu(menuBar);
@@ -138,7 +133,7 @@ public:
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
-        QWidget::setTabOrder(DirectoryTreeView, CommitlistView);
+        QWidget::setTabOrder(DirectoryTreeView, OldListView);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuMenage->menuAction());

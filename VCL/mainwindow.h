@@ -5,6 +5,7 @@
 #include <QSortFilterProxyModel>
 #include "modifiedFileSystemModel.h"
 #include "ControlManager.h"
+#include "diffmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,9 +18,14 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(int argc, char *argv[],QWidget *parent = 0);
     ~MainWindow();
+	void resizeEvent(QResizeEvent* event);
+public slots:
+	void onSplitterMove(int pos, int index);
 private:
     Ui::MainWindow *ui;
-	ModifiedFileSystemModel* directoryModel;
+	DiffModel* m_diffModel;
+	ModifiedFileSystemModel* m_directoryModel;
+	int m_currentSliderValue;
 };
 
 #endif // MAINWINDOW_H

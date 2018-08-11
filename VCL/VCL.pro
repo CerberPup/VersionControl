@@ -26,12 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        modifiedFileSystemModel.cpp
+        modifiedFileSystemModel.cpp \
+	diffmodel.cpp
 
 HEADERS += \
         mainwindow.h \
         modifiedFileSystemModel.h \
-	ControlManager.h
+	ControlManager.h \
+	diffmodel.h
 
 FORMS += \
         mainwindow.ui
