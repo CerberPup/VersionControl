@@ -29,9 +29,9 @@ namespace DT
 		QString wholeText() const
 		{
 			QString returnVal;
-			for each (std::pair<lineStatus, QString> var in data)
+                        for (size_t i = 0; i < data.size(); i++)
 			{
-				returnVal += var.second;
+				returnVal += (*std::next(data.begin(),i)).second;
 			}
 			returnVal.remove(returnVal.size() - 1, 1);
 			return returnVal;
@@ -49,9 +49,7 @@ namespace DT
 			return tmp;
 		}
 	};
-
-	Q_DECLARE_METATYPE(diffRowData);
-
-
 }
+
+	Q_DECLARE_METATYPE(DT::diffRowData);
 #endif // DATA_OBJECTS_H
