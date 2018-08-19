@@ -109,7 +109,8 @@ void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _new
     if (_systemGenerator)
     {
 #ifndef _WIN32
-        system("diff -u " + _oldFile.toUtf8.toStdString()+" " + _newFile.toUtf8.toStdString() + " > " + _diffFile.toUtf8.toStdString());
+        std::string command = "diff -u " + _oldFile.toUtf8().toStdString()+" " + _newFile.toUtf8().toStdString() + " > " + _diffFile.toUtf8().toStdString();
+        system(command.c_str());
 #else
         QMessageBox(QMessageBox::Icon::Warning, "Warning", "Windows doesn't have any good diff tool.");
 #endif // !_WIN32
