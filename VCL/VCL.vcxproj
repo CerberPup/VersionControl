@@ -110,8 +110,8 @@
       <QTDIR>D:\QT\5.11.1\MSVC2015_64</QTDIR>
       <InputFile>%(FullPath)</InputFile>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;D:/QT/5.11.1/MSVC2015_64/mkspecs/win32-msvc;.;D:/QT/5.11.1/MSVC2015_64/include;D:/QT/5.11.1/MSVC2015_64/include/QtWidgets;D:/QT/5.11.1/MSVC2015_64/include/QtGui;D:/QT/5.11.1/MSVC2015_64/include/QtANGLE;D:/QT/5.11.1/MSVC2015_64/include/QtCore;D:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.14.26428\ATLMFC\include;D:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.14.26428\include;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\ucrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\shared;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\winrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\cppwinrt</IncludePath>
-      <Define>UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
+      <IncludePath>.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\release;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
+      <Define>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
@@ -168,8 +168,8 @@
       <QTDIR>D:\QT\5.11.1\MSVC2015_64</QTDIR>
       <InputFile>%(FullPath)</InputFile>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;D:/QT/5.11.1/MSVC2015_64/mkspecs/win32-msvc;.;D:/QT/5.11.1/MSVC2015_64/include;D:/QT/5.11.1/MSVC2015_64/include/QtWidgets;D:/QT/5.11.1/MSVC2015_64/include/QtGui;D:/QT/5.11.1/MSVC2015_64/include/QtANGLE;D:/QT/5.11.1/MSVC2015_64/include/QtCore;D:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.14.26428\ATLMFC\include;D:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.14.26428\include;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\ucrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\shared;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\winrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.17134.0\cppwinrt</IncludePath>
-      <Define>UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
+      <IncludePath>.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\debug;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
+      <Define>_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
@@ -183,15 +183,16 @@
     </QtUic>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="customdelegate.cpp" />
-    <ClCompile Include="diffmodel.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="mainwindow.cpp" />
-    <ClCompile Include="modifiedFileSystemModel.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="mainwindow.h">
-    </QtMoc>
+    <ClCompile Include="sourcefiles\custom_delegate.cpp" />
+    <ClCompile Include="sourcefiles\dialog_diff_apply.cpp" />
+    <ClCompile Include="sourcefiles\dialog_diff_gen.cpp" />
+    <ClCompile Include="sourcefiles\diff_model.cpp" />
+    <ClCompile Include="sourcefiles\main.cpp" />
+    <ClCompile Include="sourcefiles\main_window.cpp" />
+    <ClCompile Include="sourcefiles\modified_file_system_model.cpp" />
+    <ClCompile Include="sourcefiles\version_control_system.cpp" />
+    <ClCompile Include="sqlite\shell.c" />
+    <ClCompile Include="sqlite\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -212,31 +213,25 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="dialog_diffApply.ui" />
+    <QtUic Include="dialog_diffGen.ui" />
     <QtUic Include="mainwindow.ui">
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ControlManager.h" />
-    <QtMoc Include="diffmodel.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\debug;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\release;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <QtMoc Include="customdelegate.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\debug;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\release;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
-    <ClInclude Include="dataObjects.h" />
+    <QtMoc Include="headerfiles\custom_delegate.h" />
+    <ClInclude Include="GeneratedFiles\ui_dialog_diffApply.h" />
+    <ClInclude Include="GeneratedFiles\ui_dialog_diffGen.h" />
+    <ClInclude Include="headerfiles\data_objects.h" />
+    <QtMoc Include="headerfiles\diff_model.h" />
+    <QtMoc Include="headerfiles\main_window.h" />
+    <QtMoc Include="headerfiles\modified_file_system_model.h" />
+    <QtMoc Include="headerfiles\dialog_diff_apply.h" />
+    <QtMoc Include="headerfiles\dialog_diff_gen.h" />
+    <ClInclude Include="headerfiles\version_control_system.h" />
+    <ClInclude Include="sqlite\sqlite3.h" />
+    <ClInclude Include="sqlite\sqlite3ext.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
-    <QtMoc Include="modifiedFileSystemModel.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\debug;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\release;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </QtMoc>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

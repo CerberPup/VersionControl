@@ -28,16 +28,19 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
-    QAction *actionOpen;
+    QAction *actionSet_Root;
     QAction *actionExit;
     QAction *actionInitialize_Version_Control;
     QAction *actionCommit_Changes;
+    QAction *actionReset_Root_folder;
+    QAction *actionGenerate_patch;
+    QAction *actionApply_patch;
+    QAction *actionAbout_QT;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QSplitter *splitter_3;
     QTreeView *DirectoryTreeView;
     QSplitter *splitter_2;
-    QListView *CommitListView;
     QSplitter *splitter;
     QListView *OldListView;
     QListView *NewListView;
@@ -53,14 +56,25 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(719, 524);
-        actionOpen = new QAction(MainWindow);
-        actionOpen->setObjectName(QStringLiteral("actionOpen"));
+        actionSet_Root = new QAction(MainWindow);
+        actionSet_Root->setObjectName(QStringLiteral("actionSet_Root"));
         actionExit = new QAction(MainWindow);
         actionExit->setObjectName(QStringLiteral("actionExit"));
         actionInitialize_Version_Control = new QAction(MainWindow);
         actionInitialize_Version_Control->setObjectName(QStringLiteral("actionInitialize_Version_Control"));
         actionCommit_Changes = new QAction(MainWindow);
         actionCommit_Changes->setObjectName(QStringLiteral("actionCommit_Changes"));
+        actionReset_Root_folder = new QAction(MainWindow);
+        actionReset_Root_folder->setObjectName(QStringLiteral("actionReset_Root_folder"));
+        actionGenerate_patch = new QAction(MainWindow);
+        actionGenerate_patch->setObjectName(QStringLiteral("actionGenerate_patch"));
+        actionApply_patch = new QAction(MainWindow);
+        actionApply_patch->setObjectName(QStringLiteral("actionApply_patch"));
+        actionApply_patch->setShortcutContext(Qt::WindowShortcut);
+        actionApply_patch->setAutoRepeat(true);
+        actionAbout_QT = new QAction(MainWindow);
+        actionAbout_QT->setObjectName(QStringLiteral("actionAbout_QT"));
+        actionAbout_QT->setMenuRole(QAction::AboutQtRole);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout = new QGridLayout(centralWidget);
@@ -89,9 +103,6 @@ public:
         splitter_2->setObjectName(QStringLiteral("splitter_2"));
         splitter_2->setOrientation(Qt::Vertical);
         splitter_2->setChildrenCollapsible(false);
-        CommitListView = new QListView(splitter_2);
-        CommitListView->setObjectName(QStringLiteral("CommitListView"));
-        splitter_2->addWidget(CommitListView);
         splitter = new QSplitter(splitter_2);
         splitter->setObjectName(QStringLiteral("splitter"));
         splitter->setOrientation(Qt::Horizontal);
@@ -139,11 +150,15 @@ public:
         menuBar->addAction(menuMenage->menuAction());
         menuBar->addAction(menuSettings->menuAction());
         menuBar->addAction(menuOption->menuAction());
-        menuFile->addAction(actionOpen);
+        menuFile->addAction(actionSet_Root);
+        menuFile->addAction(actionReset_Root_folder);
         menuFile->addSeparator();
         menuFile->addAction(actionExit);
         menuMenage->addAction(actionInitialize_Version_Control);
         menuMenage->addAction(actionCommit_Changes);
+        menuMenage->addSeparator();
+        menuMenage->addAction(actionGenerate_patch);
+        menuMenage->addAction(actionApply_patch);
 
         retranslateUi(MainWindow);
         QObject::connect(actionExit, SIGNAL(triggered()), MainWindow, SLOT(close()));
@@ -154,10 +169,20 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
-        actionOpen->setText(QApplication::translate("MainWindow", "Select Root Folder", nullptr));
+        actionSet_Root->setText(QApplication::translate("MainWindow", "Select Root folder", nullptr));
         actionExit->setText(QApplication::translate("MainWindow", "Exit", nullptr));
         actionInitialize_Version_Control->setText(QApplication::translate("MainWindow", "Initialize Version Control", nullptr));
         actionCommit_Changes->setText(QApplication::translate("MainWindow", "Commit Changes", nullptr));
+        actionReset_Root_folder->setText(QApplication::translate("MainWindow", "Reset Root folder", nullptr));
+        actionGenerate_patch->setText(QApplication::translate("MainWindow", "Generate patch", nullptr));
+#ifndef QT_NO_SHORTCUT
+        actionGenerate_patch->setShortcut(QApplication::translate("MainWindow", "Ctrl+G", nullptr));
+#endif // QT_NO_SHORTCUT
+        actionApply_patch->setText(QApplication::translate("MainWindow", "Apply patch", nullptr));
+#ifndef QT_NO_SHORTCUT
+        actionApply_patch->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", nullptr));
+#endif // QT_NO_SHORTCUT
+        actionAbout_QT->setText(QApplication::translate("MainWindow", "About Qt", nullptr));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuOption->setTitle(QApplication::translate("MainWindow", "Help", nullptr));
         menuSettings->setTitle(QApplication::translate("MainWindow", "Settings", nullptr));

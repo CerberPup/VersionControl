@@ -68,7 +68,6 @@
        <property name="childrenCollapsible">
         <bool>false</bool>
        </property>
-       <widget class="QListView" name="CommitListView"/>
        <widget class="QSplitter" name="splitter">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -123,7 +122,8 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="actionSet_Root"/>
+    <addaction name="actionReset_Root_folder"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -146,6 +146,9 @@
     </property>
     <addaction name="actionInitialize_Version_Control"/>
     <addaction name="actionCommit_Changes"/>
+    <addaction name="separator"/>
+    <addaction name="actionGenerate_patch"/>
+    <addaction name="actionApply_patch"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuMenage"/>
@@ -153,9 +156,9 @@
    <addaction name="menuOption"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionOpen">
+  <action name="actionSet_Root">
    <property name="text">
-    <string>Select Root Folder</string>
+    <string>Select Root folder</string>
    </property>
   </action>
   <action name="actionExit">
@@ -171,6 +174,41 @@
   <action name="actionCommit_Changes">
    <property name="text">
     <string>Commit Changes</string>
+   </property>
+  </action>
+  <action name="actionReset_Root_folder">
+   <property name="text">
+    <string>Reset Root folder</string>
+   </property>
+  </action>
+  <action name="actionGenerate_patch">
+   <property name="text">
+    <string>Generate patch</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionApply_patch">
+   <property name="text">
+    <string>Apply patch</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
+   <property name="autoRepeat">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionAbout_QT">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutQtRole</enum>
    </property>
   </action>
  </widget>

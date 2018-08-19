@@ -35,37 +35,41 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="SQLite">
+      <UniqueIdentifier>{edcc1dcd-d760-4e5b-a93e-be9be448b3ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="sqlite\shell.c">
+      <Filter>SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="sqlite\sqlite3.c">
+      <Filter>SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="sourcefiles\custom_delegate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow.cpp">
+    <ClCompile Include="sourcefiles\diff_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modifiedFileSystemModel.cpp">
+    <ClCompile Include="sourcefiles\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="diffmodel.cpp">
+    <ClCompile Include="sourcefiles\main_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="customdelegate.cpp">
+    <ClCompile Include="sourcefiles\modified_file_system_model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="mainwindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="modifiedFileSystemModel.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="diffmodel.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="customdelegate.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
+    <ClCompile Include="sourcefiles\version_control_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sourcefiles\dialog_diff_apply.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sourcefiles\dialog_diff_gen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -79,16 +83,54 @@
     <QtUic Include="mainwindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="dialog_diffApply.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="dialog_diffGen.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="ControlManager.h">
+    <ClInclude Include="sqlite\sqlite3.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlite\sqlite3ext.h">
+      <Filter>SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="headerfiles\data_objects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dataObjects.h">
+    <ClInclude Include="headerfiles\version_control_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_dialog_diffApply.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_dialog_diffGen.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="headerfiles\custom_delegate.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="headerfiles\diff_model.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="headerfiles\main_window.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="headerfiles\modified_file_system_model.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="headerfiles\dialog_diff_apply.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="headerfiles\dialog_diff_gen.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>
