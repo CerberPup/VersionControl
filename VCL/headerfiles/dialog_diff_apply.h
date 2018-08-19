@@ -9,12 +9,12 @@ class DialogDiffApply : public QDialog, public Ui::DialogDiffApply
 {
     Q_OBJECT
 private:
-    enum fileType
+    enum FileType
     {
-        DiffFile = 0,
-        BaseFile
+        Diff = 0,
+        Any
     };
-    QString selectFile(fileType f);
+    QString selectFile(FileType f);
 private slots:
     
     void onSelectBase();

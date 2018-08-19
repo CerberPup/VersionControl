@@ -104,6 +104,23 @@ void MainWindow::onDiffModelDataChange()
     m_customDelegate->setNumberWidth(m_diffModel->rowCount());
 }
 
+void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _newFile, const QString & _diffFile, const bool & _systemGenerator)
+{
+    if (_systemGenerator)
+    {
+#ifndef _WIN32
+        system("diff -u " + _oldFile.toUtf8.toStdString()+" " + _newFile.toUtf8.toStdString() + " > " + _diffFile.toUtf8.toStdString());
+#else
+        QMessageBox(QMessageBox::Icon::Warning, "Warning", "Windows doesn't have any good diff tool.");
+#endif // !_WIN32
+
+    }
+    else
+    {
+
+    }
+}
+
 void MainWindow::onSetRoot()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Select Root directory"), "", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
@@ -124,12 +141,14 @@ void MainWindow::onCustomContextMenu(const QPoint &point)
 	}
 }
 
+
+
 void MainWindow::onGenerateDiff()
 {
     DialogDiffGen genDialog(this);
     if (genDialog.exec()) 
     {
-
+        generateDiffFile(genDialog.getOld(), genDialog.getNew(), genDialog.getPatch(), genDialog.getGenerationType());
     }
 }
 
@@ -144,7 +163,7 @@ void MainWindow::onApplyDiff()
         }
         else 
         {
-            QMessageBox msg(QMessageBox::Icon::Warning, "Error", "Parsing diff file failed." );
+            QMessageBox msg(QMessageBox::Icon::Critical, "Error", "Parsing diff file failed." );
             msg.exec();
         }
         

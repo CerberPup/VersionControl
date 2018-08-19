@@ -20,23 +20,23 @@ DialogDiffApply::~DialogDiffApply()
 {
 }
 
-QString DialogDiffApply::selectFile(fileType _f)
+QString DialogDiffApply::selectFile(FileType _f)
 {
-    QString header = _f == fileType::BaseFile ? "Select base file" : "Select patch file";
-    QString fileType = _f == fileType::BaseFile ? "" : "Patch (*.diff *.patch);;";
-    fileType += "All files (*.*)";
-    QString dir = QFileDialog::getOpenFileName(this, header, _f == fileType::BaseFile ? lineEdit->text(): lineEdit_2->text(), fileType);
+    QString header = _f == FileType::Any ? "Select base file" : "Select patch file";
+    QString FileType = _f == FileType::Any ? "" : "Patch (*.diff *.patch);;";
+    FileType += "All files (*.*)";
+    QString dir = QFileDialog::getOpenFileName(this, header, _f == FileType::Any ? lineEdit->text(): lineEdit_2->text(), FileType);
     return dir;
 }
 
 void DialogDiffApply::onSelectBase()
 {
-    lineEdit->setText(selectFile(fileType::BaseFile));
+    lineEdit->setText(selectFile(FileType::Any));
 }
 
 void DialogDiffApply::onSelectDiff()
 {
-    lineEdit_2->setText(selectFile(fileType::DiffFile));
+    lineEdit_2->setText(selectFile(FileType::Diff));
 }
 
 void DialogDiffApply::onValidateInputs()
@@ -62,6 +62,8 @@ void DialogDiffApply::onValidateInputs()
             error = diffError;
         }
     }
+    if (!base || !diff)
+        error.append(".");
     label_error->setText(error);
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(error=="");
 }

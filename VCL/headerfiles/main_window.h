@@ -22,6 +22,7 @@ public:
     explicit MainWindow(int argc, char *argv[],QWidget *parent = 0);
     ~MainWindow();
 	void resizeEvent(QResizeEvent* event);
+
 public slots:
 	void onSplitterMove(int pos, int index);
 	void onCustomContextMenu(const QPoint &point);
@@ -31,8 +32,10 @@ public slots:
 	void onInitializeVersionControl();
 	void onChangeRoot();
 	void onClearRoot();
+
 private:
     void onDiffModelDataChange();
+    void generateDiffFile(const QString& _oldFile, const QString& _newFile, const QString& _diffFile, const bool& _systemGenerator);
 	QMenu * contextMenu;
     Ui::MainWindow *ui;
 	DiffModel* m_diffModel;
