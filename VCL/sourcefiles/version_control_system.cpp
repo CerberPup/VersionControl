@@ -28,7 +28,7 @@ namespace VersionControllSystem
     {
         if (QFileInfo::exists(_path + "/.VCS/data.db"))
         {
-            sqlite3_open(_path.toUtf8() + "/.VCS/data.db", &connection);
+            //sqlite3_open(_path.toUtf8().constData() + "/.VCS/data.db", &connection);
         }
         else 
         {
@@ -52,7 +52,7 @@ namespace VersionControllSystem
 
     VersionControllRoot::~VersionControllRoot()
     {
-        sqlite3_close(connection);
+        //sqlite3_close(connection);
     }
 
     bool VersionControllRoot::isInitialized()
@@ -95,7 +95,7 @@ namespace VersionControllSystem
         }
         else
         {
-            std::string _dirSTR = _dir.toUtf8();
+            std::string _dirSTR = _dir.toUtf8().constData();
             std::unordered_set<std::string>::iterator cacheIterator = cache.find(_dirSTR);
             if (cacheIterator != cache.end())
             {
@@ -126,12 +126,12 @@ namespace VersionControllSystem
         QDir directory(_path);
         success &= directory.mkdir(".VCS");
 #ifdef _WIN32
-        success &= SetFileAttributesA(_path.toUtf8() + "/.VCS", FILE_ATTRIBUTE_HIDDEN) != 0;
+        //success &= SetFileAttributesA(_path.toUtf8().constData() + "/.VCS", FILE_ATTRIBUTE_HIDDEN) != 0;
 #endif
         std::shared_ptr<VersionControllRoot> newObject = std::make_shared<VersionControllRoot>(_path);
         rootObjects[_path] = std::make_shared<VersionControllRoot>(_path);
         //success &= createDataFile(_path + "/.VCS/FileData");
-        std::string _pathSTR = _path.toUtf8();
+        std::string _pathSTR = _path.toUtf8().constData();
         if (success) {
             for (std::unordered_set<std::string>::iterator i = cache.begin(); i != cache.end(); i++)
             {

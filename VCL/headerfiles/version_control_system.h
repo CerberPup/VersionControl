@@ -1,8 +1,12 @@
 #ifndef VERSION_CONTROLL_SYSTEM_H
 #define VERSION_CONTROLL_SYSTEM_H
 
-#include "sqlite\sqlite3.h"
+/*
+extern "C"{
+#include "sqlite/sqlite3.h"
+}*/
 
+#include <memory>
 #include <unordered_set>
 
 #include <QDir>
@@ -21,7 +25,7 @@ namespace VersionControllSystem
         bool isInitialized();
 
     private:
-        sqlite3* connection;
+    //    sqlite3* connection;
         bool initialized;
     };
 

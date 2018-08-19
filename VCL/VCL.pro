@@ -24,27 +24,31 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 #CONFIG += c++1z
 
-QMAKE_CXXFLAGS += -std=c++17
+QMAKE_CXXFLAGS += -std=gnu++17
 
 SOURCES += \
+#        sqlite/shell.c \
+#        sqlite/sqlite3.c \
         sourcefiles/custom_delegate.cpp \
         sourcefiles/dialog_diff_apply.cpp \
         sourcefiles/dialog_diff_gen.cpp \
         sourcefiles/diff_model.cpp \
         sourcefiles/main.cpp \
         sourcefiles/main_window.cpp \
-		sourcefiles/modified_file_system_model.cpp \
+        sourcefiles/modified_file_system_model.cpp \
         sourcefiles/version_control_system.cpp
 
 HEADERS += \
+#        sqlite/sqlite3.h \
+#        sqlite/sqlite3ext.h\
         headerfiles/custom_delegate.h \
         headerfiles/data_objects.h \
-		headerfiles/dialog_diff_apply.h \
+        headerfiles/dialog_diff_apply.h \
         headerfiles/dialog_diff_gen.h \
         headerfiles/diff_model.h \
         headerfiles/main_window.h \
         headerfiles/modified_file_system_model.h \
-        headerfiles/version_control_system.h
+#        headerfiles/version_control_system.h
 
 FORMS += \
         mainwindow.ui

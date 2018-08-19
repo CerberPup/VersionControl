@@ -1,7 +1,7 @@
 #ifndef DIALOG_DIFF_GEN_H
 #define DIALOG_DIFF_GEN_H
 
-#include "ui_dialog_diffGen.h"
+#include "GeneratedFiles/ui_dialog_diffGen.h"
 
 #include <QDialog>
 
