@@ -28,6 +28,7 @@ public slots:
 	void onCustomContextMenu(const QPoint &point);
 	void onGenerateDiff();
 	void onApplyDiff();
+    void onSaveGeneratedFile();
 	void onSetRoot();
 	void onInitializeVersionControl();
 	void onChangeRoot();

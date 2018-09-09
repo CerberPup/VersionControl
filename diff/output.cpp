@@ -4,6 +4,7 @@
 #include <list>
 
 #include <QFontMetrics>
+#include <QMetaType>
 #include <QString>
 #include <QTextLayout>
 
@@ -24,7 +25,6 @@ namespace DT
 		diffRowData() {}
 		diffRowData(std::pair<lineStatus, QString> line) :data(std::list<std::pair<lineStatus, QString>>({ line })) {}
 		diffRowData(std::list<std::pair<lineStatus, QString>> _data) :data(std::list<std::pair<lineStatus, QString>>(_data)) {}
-		void clear() { data.clear(); }
 		size_t size() { return data.size(); }
 		std::pair<lineStatus, QString>& operator[](int i) { return *std::next(data.begin(),i); }
 		QString wholeText() const
@@ -32,14 +32,13 @@ namespace DT
 			QString returnVal;
                         for (size_t i = 0; i < data.size(); i++)
 			{
-				returnVal += (*std::next(data.begin(),i)).second;
+				returnVal += (*std::next(data.begin(),i)).first;
 			}
 			returnVal.remove(returnVal.size() - 1, 1);
 			return returnVal;
 		}
 		QRect lineTextSize(const QFontMetrics& _metric, QSize _viewSize, int index) {
 			QString a = operator[](index).second;
-			a.remove(a.size() - 1, 1);
 			QRect tmp = _metric.boundingRect(QRect(QPoint(0, 0), _viewSize), Qt::TextWordWrap, a);
 			return tmp;
 		}

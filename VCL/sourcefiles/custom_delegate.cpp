@@ -28,7 +28,7 @@ void CustomDelegate::paintNumber(QPainter *painter, const QStyleOptionViewItem &
     QRect numberArea(option.rect.topLeft(), QSize(numberWidth, option.rect.height()));
     painter->drawRect(numberArea);
     painter->setPen(QColor(255, 255, 255));
-    QString str(std::string("" + std::to_string(index.row()) + ':').c_str());
+    QString str(std::string("" + std::to_string(index.row()+1) + ':').c_str());
     painter->drawText(numberArea,str, QTextOption(Qt::AlignmentFlag::AlignRight));
     painter->restore();
 }

@@ -1,0 +1,18 @@
+--- test.cpp	2018-08-04 17:30:09.079402400 +0200
++++ test3.cpp	2018-08-04 17:30:08.690526800 +0200
+@@ -2,11 +2,13 @@
+ 
+ using namespace std;
+ 
+-int main()
++int main(int argc, char** argv)
+ {
+ 	if (arc==3)
+ 	{
+-		cout << "test";
++		cout << argv[0];
++		cout << argv[1];
++		cout << argv[2];
+ 	}
+ +    return 0;
+ }
