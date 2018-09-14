@@ -1,0 +1,5 @@
+*.o
+VCL
+moc_*.*
+MakeFile
+ui_*.*
