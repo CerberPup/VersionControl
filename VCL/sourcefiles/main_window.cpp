@@ -342,10 +342,10 @@ void MainWindow::onGenerateDiff()
 void MainWindow::onApplyDiff()
 {
     DialogDiffApply applyDialog(this);
-    //if (applyDialog.exec())
+    if (applyDialog.exec())
     {
-        //if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
-        if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test-u.diff"))
+        if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
+        //if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test-u.diff"))
         {
             onDiffModelDataChange();
         }
