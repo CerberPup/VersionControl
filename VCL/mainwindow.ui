@@ -136,6 +136,7 @@
     <property name="title">
      <string>Settings</string>
     </property>
+    <addaction name="actionSettings"/>
    </widget>
    <widget class="QMenu" name="menuMenage">
     <property name="enabled">
@@ -216,6 +217,11 @@
   <action name="actionSave_generated_file">
    <property name="text">
     <string>Save generated file</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings...</string>
    </property>
   </action>
  </widget>

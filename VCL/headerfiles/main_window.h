@@ -8,7 +8,6 @@
 #include "custom_delegate.h"
 #include "diff_model.h"
 #include "modified_file_system_model.h"
-#include "version_control_system.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +25,7 @@ public:
 public slots:
 	void onSplitterMove(int pos, int index);
 	void onCustomContextMenu(const QPoint &point);
+    void onSettingsRequest();
 	void onGenerateDiff();
 	void onApplyDiff();
     void onSaveGeneratedFile();
@@ -37,6 +37,7 @@ public slots:
 private:
     void onDiffModelDataChange();
     void generateDiffFile(const QString& _oldFile, const QString& _newFile, const QString& _diffFile, const bool& _systemGenerator);
+
 	QMenu * contextMenu;
     Ui::MainWindow *ui;
 	DiffModel* m_diffModel;

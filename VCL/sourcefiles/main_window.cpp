@@ -1,8 +1,10 @@
 #include "headerfiles/main_window.h"
 
+#include "headerfiles/config_manager.h"
 #include "headerfiles/custom_delegate.h"
 #include "headerfiles/dialog_diff_apply.h"
 #include "headerfiles/dialog_diff_gen.h"
+#include "headerfiles/dialog_settings.h"
 #include "ui_mainwindow.h"
 
 #include <queue>
@@ -169,6 +171,8 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	, m_directoryModel(new ModifiedFileSystemModel(this))
 	, m_diffModel(new DiffModel(this))
 {
+    ConfigManager::getInstance().initialize(QCoreApplication::applicationDirPath());
+
     ui->setupUi(this);
 
 	ui->DirectoryTreeView->setModel(m_directoryModel);
@@ -190,7 +194,6 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	ui->OldListView->setItemDelegate(m_customDelegate);
 
     m_diffModel->setFontMetrics(QFontMetrics(QString("Roboto"),this));
-    //m_diffModel->loadFileAndDiff("D:\\git\\VersionControll\\diff\\test.cpp", "D:\\git\\VersionControll\\diff\\test-u.diff");
 	onDiffModelDataChange();
 
 	m_currentSliderValue = 0;
@@ -210,6 +213,7 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	}});
 
     connect(ui->actionReset_Root_folder, SIGNAL(triggered()), this, SLOT(onSetRoot()));
+    connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(onSettingsRequest()));
     connect(ui->actionApply_patch, SIGNAL(triggered()), this, SLOT(onApplyDiff()));
     connect(ui->actionGenerate_patch, SIGNAL(triggered()), this, SLOT(onGenerateDiff()));
     connect(ui->actionSave_generated_file, SIGNAL(triggered()), this, SLOT(onSaveGeneratedFile()));
@@ -319,6 +323,12 @@ void MainWindow::onCustomContextMenu(const QPoint &point)
 	}
 }
 
+void MainWindow::onSettingsRequest()
+{
+    DialogSettings settingsDialog(this);
+    settingsDialog.exec();
+}
+
 void MainWindow::onGenerateDiff()
 {
     DialogDiffGen genDialog(this);
@@ -332,10 +342,10 @@ void MainWindow::onGenerateDiff()
 void MainWindow::onApplyDiff()
 {
     DialogDiffApply applyDialog(this);
-    if (applyDialog.exec())
+    //if (applyDialog.exec())
     {
-        if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
-        //if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test-u.diff"))
+        //if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
+        if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test-u.diff"))
         {
             onDiffModelDataChange();
         }

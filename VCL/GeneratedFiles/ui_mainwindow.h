@@ -37,6 +37,7 @@ public:
     QAction *actionApply_patch;
     QAction *actionAbout_QT;
     QAction *actionSave_generated_file;
+    QAction *actionSettings;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QSplitter *splitter_3;
@@ -78,6 +79,8 @@ public:
         actionAbout_QT->setMenuRole(QAction::AboutQtRole);
         actionSave_generated_file = new QAction(MainWindow);
         actionSave_generated_file->setObjectName(QStringLiteral("actionSave_generated_file"));
+        actionSettings = new QAction(MainWindow);
+        actionSettings->setObjectName(QStringLiteral("actionSettings"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout = new QGridLayout(centralWidget);
@@ -157,6 +160,7 @@ public:
         menuFile->addAction(actionReset_Root_folder);
         menuFile->addSeparator();
         menuFile->addAction(actionExit);
+        menuSettings->addAction(actionSettings);
         menuMenage->addAction(actionInitialize_Version_Control);
         menuMenage->addAction(actionCommit_Changes);
         menuMenage->addSeparator();
@@ -189,6 +193,7 @@ public:
 #endif // QT_NO_SHORTCUT
         actionAbout_QT->setText(QApplication::translate("MainWindow", "About Qt", nullptr));
         actionSave_generated_file->setText(QApplication::translate("MainWindow", "Save generated file", nullptr));
+        actionSettings->setText(QApplication::translate("MainWindow", "Settings...", nullptr));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", nullptr));
         menuOption->setTitle(QApplication::translate("MainWindow", "Help", nullptr));
         menuSettings->setTitle(QApplication::translate("MainWindow", "Settings", nullptr));
