@@ -13,6 +13,7 @@ class DiffModel : public QAbstractListModel
 {
 	Q_OBJECT
 private:
+    QString m_sourceFileName;
     int m_numberWidth;
     void endResetModel();
 	QFontMetrics m_FontMetrics;
@@ -23,10 +24,11 @@ private:
 public:
 	DiffModel(QObject *parent);
 	~DiffModel();
+    QString getSourceFileName();
     void setFontMetrics(QFontMetrics _FontMetrics);
+    std::list<QString> getOutputFileData();
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	bool loadFiles(std::string Old, std::string New);
 	bool loadFileAndDiff(std::string File, std::string DiffFile);
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 	void setOldFileViewSize(QSize _size);

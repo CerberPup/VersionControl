@@ -9,7 +9,7 @@ namespace
 {
 	QString replaceTabs(QString input)
 	{
-		if (input.size() != 0)
+		/*if (input.size() != 0)
 		{
 			int it = 0;
 
@@ -24,7 +24,7 @@ namespace
 				tmp = tab + tmp;
 			//tmp.insert(tmp.begin(), it * 4, U'·');
 			input = QString::fromStdU32String(tmp);
-		}
+		}*/
 		return input;
 	}
 }
@@ -35,6 +35,7 @@ DiffModel::DiffModel(QObject *parent)
 	, m_newFileViewSize(0,0)
 	, m_oldFileViewSize(0,0)
     , m_numberWidth(0)
+    , m_sourceFileName("")
 {
 	
 }
@@ -43,9 +44,37 @@ DiffModel::~DiffModel()
 {
 }
 
+QString DiffModel::getSourceFileName()
+{
+    return m_sourceFileName;
+}
+
 void DiffModel::setFontMetrics(QFontMetrics _FontMetrics)
 {
     m_FontMetrics = _FontMetrics;
+}
+
+std::list<QString> DiffModel::getOutputFileData()
+{
+    std::list<QString> a;
+    for (size_t i = 0; i < m_newFileData.size(); i++)
+    {
+        DT::diffRowData item = *std::next(m_newFileData.begin(),i);
+        QString text = item.wholeText();
+        if (text =="")
+        {
+            if (std::next(m_oldFileData.begin(), i)->wholeText()=="")
+            {
+                a.push_back(text);
+            }
+        }
+        else
+        {
+            a.push_back(text);
+        }
+    }
+
+    return a;
 }
 
 void DiffModel::endResetModel() 
@@ -82,36 +111,6 @@ int DiffModel::columnCount(const QModelIndex&) const
 	return 2;
 }
 
-bool DiffModel::loadFiles(std::string Old, std::string New)
-{
-	/*changeData.clear();
-	std::ifstream reader;
-	std::string bufor;
-	reader.open(Old);
-	if (reader.good())
-	{
-		while (!reader.eof())
-		{
-			std::getline(reader, bufor);
-			QString qstring(bufor.c_str());
-			replaceTabs(qstring);
-			fileOldData.push_back(qstring);
-		}
-	}
-	reader.close();
-	reader.open(New);
-	if (reader.good())
-	{
-		while (!reader.eof())
-		{
-			std::getline(reader, bufor);
-			fileNewData.push_back(QString(bufor.c_str()));
-		}
-	}
-	reader.close();*/
-	return true;
-}
-
 bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 {
     beginResetModel();
@@ -143,11 +142,19 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 		int newNumber = 0;
 		int linesAdded = 0;
 		bool afterSection = false;
+
+        std::getline(reader, bufor);
+
+        std::regex pattern("^--- (.*)\\t");
+        std::smatch pieces_match;
+        std::regex_search(bufor, pieces_match, pattern);
+        m_sourceFileName = QString(pieces_match[1].str().c_str());
 		while (!reader.eof())
 		{
 			if (!afterSection)
 				std::getline(reader, bufor);
-			if (bufor[0] == '@' && bufor[1] == '@') {
+			if (bufor[0] == '@' && bufor[1] == '@') 
+            {
 				std::regex pattern("\\d+");
 				std::sregex_iterator next(bufor.begin(), bufor.end(), pattern);
 				oldStartPrev = oldStart;
@@ -156,7 +163,9 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 				oldNumber = atoi((*++next).str().c_str());
 				newStart = atoi((*++next).str().c_str());
 				newNumber = atoi((*++next).str().c_str());
-				for (int i = oldStartPrev+ oldNumberPrev; i < oldStart-1; i++)
+                int i = oldStartPrev + oldNumberPrev;
+                i = i < 1 ? 0 : i-1;
+				for (; i < oldStart-1; i++)
 				{
                     if (i>=rawData.size())
                     {
@@ -229,6 +238,13 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 			}
 			afterSection = false;
 		}
+        int i = oldStart + oldNumber;
+        i = i < 1 ? 0 : i - 1;
+        for (; i < static_cast<int>(rawData.size()); i++)
+        {
+            m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *std::next(rawData.begin(), i))));
+            m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *std::next(rawData.begin(), i))));
+        }
 	}
 	reader.close();
     endResetModel();

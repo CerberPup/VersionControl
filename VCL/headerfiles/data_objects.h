@@ -41,11 +41,11 @@ namespace DT
 		QRect lineTextSize(const QFontMetrics& _metric, QSize _viewSize, int index) {
 			QString a = operator[](index).second;
 			a.remove(a.size() - 1, 1);
-			QRect tmp = _metric.boundingRect(QRect(QPoint(0, 0), _viewSize), 0, a);
+			QRect tmp = _metric.boundingRect(QRect(QPoint(0, 0), _viewSize), Qt::TextWordWrap, a);
 			return tmp;
 		}
 		QSize wholeTextSize(const QFontMetrics& _metric,QSize _viewSize) const {
-			QSize tmp = _metric.boundingRect(QRect(QPoint(0, 0), _viewSize), Qt::TextWordWrap | Qt::AlignLeft, wholeText()).size();
+			QSize tmp = _metric.boundingRect(QRect(QPoint(0, 0), _viewSize), Qt::TextWordWrap, wholeText()).size();
 			return tmp;
 		}
 	};
