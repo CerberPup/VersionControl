@@ -1,10 +1,10 @@
 #ifndef CONFIG_MANAGER_H
 #define CONFIG_MANAGER_H
 
-#include <QtCore/qstring>
-#include <QtCore/qdir>
-#include <QtGui/qcolor>
-#include <QtCore/qsettings>
+#include <QtCore/QString>
+#include <QtCore/QDir>
+#include <QtGui/QColor>
+#include <QtCore/QSettings>
 
 class ConfigKeys
 {

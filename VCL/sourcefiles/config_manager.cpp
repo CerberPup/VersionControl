@@ -1,4 +1,4 @@
-#include "..\headerfiles\config_manager.h"
+#include "../headerfiles/config_manager.h"
 
 
 std::map<ConfigKeys::Colors, QString> ConfigKeys::colorsKeys = {
