@@ -169,9 +169,11 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	: QMainWindow(parent)
     , ui(new Ui::MainWindow)
 	, m_directoryModel(new ModifiedFileSystemModel(this))
-	, m_diffModel(new DiffModel(this))
+    , m_customDelegate(new CustomDelegate(this))
 {
+    m_diffModel = new DiffModel(this, m_customDelegate);
     ConfigManager::getInstance().initialize(QCoreApplication::applicationDirPath());
+    QApplication::setFont(ConfigManager::getInstance().getQFont(ConfigKeys::FontKey));
 
     ui->setupUi(this);
 
@@ -187,13 +189,9 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	ui->OldListView->setModelColumn(1);
 	ui->NewListView->setModel(m_diffModel);
 	ui->NewListView->setModelColumn(0);
-
-    m_customDelegate = new CustomDelegate(this);
     
 	ui->NewListView->setItemDelegate(m_customDelegate);
 	ui->OldListView->setItemDelegate(m_customDelegate);
-
-    m_diffModel->setFontMetrics(QFontMetrics(QString("Roboto"),this));
 	onDiffModelDataChange();
 
 	m_currentSliderValue = 0;
@@ -260,7 +258,7 @@ void MainWindow::onClearRoot()
 
 void MainWindow::onDiffModelDataChange()
 {
-    m_customDelegate->setNumberWidth(m_diffModel->rowCount());
+    m_customDelegate->maxNumber(m_diffModel->rowCount());
 }
 
 void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _newFile, const QString & _diffFile, const bool & _systemGenerator)
@@ -342,10 +340,10 @@ void MainWindow::onGenerateDiff()
 void MainWindow::onApplyDiff()
 {
     DialogDiffApply applyDialog(this);
-    if (applyDialog.exec())
+    //if (applyDialog.exec())
     {
-        if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
-        //if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test-u.diff"))
+        //if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
+        if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test-u.diff"))
         {
             onDiffModelDataChange();
         }

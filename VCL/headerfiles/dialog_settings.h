@@ -7,12 +7,27 @@
 
 #include <QDialog>
 
-class CustomWidget :public QWidget
+class FontPickingWidget :public QWidget
 {
     Q_OBJECT
 
 public:
-    CustomWidget(QString label, QString key, QWidget* parrent);
+    FontPickingWidget(QString label, QString key, QWidget* parrent);
+
+private:
+    QString m_key;
+    QLabel* m_fontLabel;
+
+private slots:
+    void onFontChoose();
+};
+
+class ColorPickingWidget :public QWidget
+{
+    Q_OBJECT
+
+public:
+    ColorPickingWidget(QString label, QString key, QWidget* parrent);
 
 private:
     QString m_key;
@@ -32,6 +47,7 @@ private:
     QList<QHBoxLayout*> m_rows;
 
     void createColorRow(QString label, QString key);
+    void createFontRow(QString label, QString key);
 
 private slots:
     void onSelectedItem(const QModelIndex &index);

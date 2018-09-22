@@ -1,5 +1,5 @@
 #include "..\headerfiles\config_manager.h"
-
+#include "QtWidgets/QApplication"
 
 std::map<ConfigKeys::Colors, QString> ConfigKeys::colorsKeys = {
     { DiffWindow_addedTextForeground ,"DiffWindow/Added Text/Foreground" },//
@@ -32,6 +32,8 @@ std::map<ConfigKeys::Colors, QColor> ConfigKeys::colorsDefaults = {
     { DiffWindow_lineNumberEvenBackground ,QColor(160,160,160) },
     { DiffWindow_mouseHover ,QColor(200,200,200) }
 };
+
+const QString ConfigKeys::FontKey = "Application/Font";
 
 ConfigManager::ConfigManager()
 {
@@ -83,4 +85,14 @@ void ConfigManager::setQColor(const QString key, const QColor color)
 void ConfigManager::setQColor(const ConfigKeys::Colors key, const QColor color)
 {
     settings->setValue(ConfigKeys::getColorKey(key), color);
+}
+
+QFont ConfigManager::getQFont(const QString key)
+{
+    return settings->value(key, QApplication::font()).value<QFont>();
+}
+
+void ConfigManager::setQFont(const QString key, const QFont font)
+{
+    settings->setValue(key, font);
 }

@@ -29,12 +29,11 @@ namespace
 	}
 }
 
-DiffModel::DiffModel(QObject *parent)
+DiffModel::DiffModel(QObject *parent, CustomDelegate *_delegate)
 	: QAbstractListModel(parent)
-	, m_FontMetrics(QFont("Roboto"))
 	, m_newFileViewSize(0,0)
 	, m_oldFileViewSize(0,0)
-    , m_numberWidth(0)
+    , m_del(_delegate)
     , m_sourceFileName("")
 {
 	
@@ -47,11 +46,6 @@ DiffModel::~DiffModel()
 QString DiffModel::getSourceFileName()
 {
     return m_sourceFileName;
-}
-
-void DiffModel::setFontMetrics(QFontMetrics _FontMetrics)
-{
-    m_FontMetrics = _FontMetrics;
 }
 
 std::list<QString> DiffModel::getOutputFileData()
@@ -76,30 +70,6 @@ std::list<QString> DiffModel::getOutputFileData()
 
     return a;
 }
-
-void DiffModel::endResetModel() 
-{
-    int maxRow = rowCount();
-    if (maxRow < 10)
-    {
-        m_numberWidth = 10;
-    }
-    else if (maxRow < 100)
-    {
-        m_numberWidth = 17;
-    }
-    else if (maxRow < 1000)
-    {
-        m_numberWidth = 24;
-    }
-    else
-    {
-        m_numberWidth = 31;
-    }
-    m_numberWidth += 20;
-    QAbstractItemModel::endResetModel();
-}
-
 
 int DiffModel::rowCount(const QModelIndex&) const
 {
@@ -271,10 +241,10 @@ QVariant DiffModel::data(const QModelIndex & index, int role) const
 	{
         QSize newSize = m_newFileViewSize;
         QSize oldSize = m_oldFileViewSize;
-        newSize.setWidth(m_newFileViewSize.width() - m_numberWidth);
-        oldSize.setWidth(m_oldFileViewSize.width() - m_numberWidth);
-		newSize = std::next(m_newFileData.begin(), index.row())->wholeTextSize(m_FontMetrics, newSize);
-		oldSize = std::next(m_oldFileData.begin(), index.row())->wholeTextSize(m_FontMetrics, oldSize);
+        newSize.setWidth(m_newFileViewSize.width() - m_del->getLineNumberSize().width());
+        oldSize.setWidth(m_oldFileViewSize.width() - m_del->getLineNumberSize().width());
+		newSize = std::next(m_newFileData.begin(), index.row())->wholeTextSize(QApplication::fontMetrics(), newSize);
+		oldSize = std::next(m_oldFileData.begin(), index.row())->wholeTextSize(QApplication::fontMetrics(), oldSize);
 
 		return QSize(index.column() == 0? newSize.width() : oldSize.width(), newSize.height() > oldSize.height() ? newSize.height() : oldSize.height());
 		break;

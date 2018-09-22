@@ -5,10 +5,12 @@
 #include <QtCore/qdir>
 #include <QtGui/qcolor>
 #include <QtCore/qsettings>
+#include <QtGui/qfont>
 
 class ConfigKeys
 {
 public:
+    static const QString FontKey;
     enum Colors
     {
         DiffWindow_addedTextForeground = 0,
@@ -74,6 +76,9 @@ public:
     QColor getQColor(const ConfigKeys::Colors key);
     void setQColor(const QString key, const QColor color);
     void setQColor(const ConfigKeys::Colors key, const QColor color);
+
+    QFont getQFont(const QString key);
+    void setQFont(const QString key, const QFont font);
 ;};
 
 #endif // CONFIG_MANAGER_H

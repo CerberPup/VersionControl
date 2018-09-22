@@ -3,17 +3,31 @@
 #include "headerfiles/config_manager.h"
 #include "headerfiles/data_objects.h"
 #include "headerfiles/diff_model.h"
+#include <QtWidgets/qapplication.h>
+
+namespace {
+    QString int2PlaceHolder(int number)
+    {
+        QString ret = QString(static_cast<int>(std::to_string(number).length()), '#');
+        ret += ":";
+        return ret;
+    }
+}
 
 CustomDelegate::CustomDelegate(QObject *parent)
 	: QStyledItemDelegate(parent)
-	, m_font (QFont("Roboto"))
-	, m_fontMetrics(QFontMetrics(QFont("Roboto")))
+    , maxRow(0)
 {
-
+    //connect(QApplication::instance(),SIGNAL(fontChanged(QFont)),this,SLOT(onFontChanged(QFont)));
 }
 
 CustomDelegate::~CustomDelegate()
 {
+}
+
+void CustomDelegate::onFontChanged(QFont font)
+{
+    maxLineNumberSize = QApplication::fontMetrics().boundingRect(int2PlaceHolder(maxRow)).size();
 }
 
 QSize CustomDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
@@ -29,7 +43,7 @@ void CustomDelegate::paintNumber(QPainter *painter, const QStyleOptionViewItem &
         index.row()%2==0
         ? ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_lineNumberEvenBackground) 
         : ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_lineNumberOddBackground));
-    QRect numberArea(option.rect.topLeft(), QSize(numberWidth, option.rect.height()));
+    QRect numberArea(option.rect.topLeft(), QSize(maxLineNumberSize.width(), option.rect.height()));
     painter->drawRect(numberArea);
     painter->setPen(
         index.row() % 2 == 0
@@ -44,7 +58,7 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 {
 	painter->save();
 	painter->setClipping(false);
-	painter->setFont(m_font);
+	painter->setFont(QApplication::font());
 	DT::diffRowData data = index.data().value<DT::diffRowData>();
 	painter->setPen(Qt::NoPen);
     std::map<DT::lineStatus, QColor> status2BackGroundColor;
@@ -76,13 +90,13 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
     }
     paintNumber(painter, option, index);
     QRect paintArea = option.rect;
-	paintArea.adjust(numberWidth, 0, -numberWidth, 0);
+	paintArea.adjust(maxLineNumberSize.width(), 0, -maxLineNumberSize.width(), 0);
 	QRect prev(paintArea.topLeft(),QSize(0,0));
 	QSize viewSize = index.data(Qt::UserRole).toSize();
-    viewSize.setWidth(viewSize.width() - numberWidth - 20/*scrollbar width*/);
+    viewSize.setWidth(viewSize.width() - maxLineNumberSize.width() - 20/*scrollbar width*/);
 	for (int i = 0; i < data.size(); i++)
 	{
-		QRect tmp = data.lineTextSize(m_fontMetrics, viewSize, i);
+		QRect tmp = data.lineTextSize(QApplication::fontMetrics(), viewSize, i);
 		paintArea = QRect(paintArea.left(), paintArea.top() + prev.height(), tmp.width(), tmp.height());
 		prev = tmp;
 		prev.adjust(0, 0, 0, 0);
@@ -103,19 +117,13 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 	painter->restore();
 }
 
-void CustomDelegate::setNumberWidth(int maxRow)
+void CustomDelegate::maxNumber(int _maxRow)
 {
-    if (maxRow < 10)
-    {
-        numberWidth = 10;
-    }else if (maxRow < 100)
-    {
-        numberWidth = 17;
-    }else if (maxRow < 1000)
-    {
-        numberWidth = 24;
-    }else
-    {
-        numberWidth = 31;
-    }
+    maxRow = _maxRow;
+    maxLineNumberSize = QApplication::fontMetrics().boundingRect(int2PlaceHolder(_maxRow)).size();
+}
+
+QSize CustomDelegate::getLineNumberSize() const
+{
+    return maxLineNumberSize;
 }

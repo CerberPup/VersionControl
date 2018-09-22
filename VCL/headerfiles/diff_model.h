@@ -2,6 +2,7 @@
 #define DIFFMODEL_H
 
 #include "data_objects.h"
+#include "custom_delegate.h"
 
 #include <list>
 
@@ -14,18 +15,15 @@ class DiffModel : public QAbstractListModel
 	Q_OBJECT
 private:
     QString m_sourceFileName;
-    int m_numberWidth;
-    void endResetModel();
-	QFontMetrics m_FontMetrics;
 	std::list<DT::diffRowData> m_oldFileData;
 	std::list<DT::diffRowData> m_newFileData;
 	QSize m_oldFileViewSize;
 	QSize m_newFileViewSize;
+    const CustomDelegate* m_del;
 public:
-	DiffModel(QObject *parent);
+	DiffModel(QObject *parent, CustomDelegate *_delegate);
 	~DiffModel();
     QString getSourceFileName();
-    void setFontMetrics(QFontMetrics _FontMetrics);
     std::list<QString> getOutputFileData();
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;

@@ -5,6 +5,7 @@
 
 #include <QtWidgets/qpushbutton.h>
 #include <QtWidgets/qcolordialog.h>
+#include <QtWidgets/QFontDialog>
 
 namespace {
     void clearLayout(QLayout *layout)
@@ -20,8 +21,40 @@ namespace {
         }
     }
 }
+//////////////////////////////////////////
+FontPickingWidget::FontPickingWidget(QString label, QString key, QWidget* parrent) :QWidget(parrent), m_key(key)
+{
+    QHBoxLayout* container = new QHBoxLayout(this);
+    container->setSpacing(5);
+    container->setMargin(2);
 
-CustomWidget::CustomWidget(QString label, QString key, QWidget* parrent):QWidget(parrent), m_key(key)
+    container->addWidget(new QLabel(label, this));
+    m_fontLabel = new QLabel(this);
+    m_fontLabel->setMinimumSize(QSize(64, 16));
+    container->addWidget(m_fontLabel);
+
+    QPushButton* button = new QPushButton("...", this);
+    button->setFixedSize(24, 18);
+    connect(button, SIGNAL(clicked()), this, SLOT(onFontChoose()));
+    container->addWidget(button);
+
+    setLayout(container);
+}
+
+void FontPickingWidget::onFontChoose()
+{
+    QFont font = ConfigManager::getInstance().getQFont(m_key);
+    QFontDialog dialog(font, this);
+    if (dialog.exec())
+    {
+        ConfigManager::getInstance().setQFont(m_key, dialog.selectedFont());
+        QApplication::setFont(dialog.selectedFont());
+        m_fontLabel->setFont(dialog.selectedFont());
+    }
+
+}
+////////////////////////////////////////////////////
+ColorPickingWidget::ColorPickingWidget(QString label, QString key, QWidget* parrent):QWidget(parrent), m_key(key)
 {
     QHBoxLayout* container = new QHBoxLayout(this);
     container->setSpacing(5);
@@ -42,7 +75,7 @@ CustomWidget::CustomWidget(QString label, QString key, QWidget* parrent):QWidget
     setLayout(container);
 }
 
-void CustomWidget::onColorChoose()
+void ColorPickingWidget::onColorChoose()
 {
     QColor color = ConfigManager::getInstance().getQColor(m_key);
     QColorDialog dialog(color,this);
@@ -55,10 +88,15 @@ void CustomWidget::onColorChoose()
     }
 
 }
-
+//////////////////////////////////////////////////
 void DialogSettings::createColorRow(QString label, QString key)
 {
-    wdg->verticalLayout->addWidget(new CustomWidget(label, key, this));
+    wdg->verticalLayout->addWidget(new ColorPickingWidget(label, key, this));
+}
+
+void DialogSettings::createFontRow(QString label, QString key)
+{
+    wdg->verticalLayout->addWidget(new FontPickingWidget(label, key, this));
 }
 
 DialogSettings::DialogSettings(QWidget *parent)
@@ -93,7 +131,7 @@ void DialogSettings::onSelectedItem(const QModelIndex &index)
         {
             if (var.split('/').last() == "Font")
             {
-
+                createFontRow("Font", var);
             }
             else
             {

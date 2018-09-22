@@ -52,5 +52,6 @@ void SettingsModel::initialize()
         QString key = ConfigKeys::getColorKey(static_cast<ConfigKeys::Colors>(i));
         addTreeItem(key);
     }
+    addTreeItem(ConfigKeys::FontKey);
 
 }
