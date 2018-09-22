@@ -16,9 +16,9 @@
 #include <QScrollBar>
 #include <QTextStream>
 
-namespace 
+namespace
 {
-    std::string intToUtcOffset(int &hours) 
+    std::string intToUtcOffset(int &hours)
     {
         std::string returnValue;
         if (hours > 0)
@@ -53,15 +53,15 @@ namespace
     public:
         FifoContainer(size_t _size):size(_size){}
 
-        void push(T _element) 
+        void push(T _element)
         {
             if (data.size() == size)
                 data.pop();
             data.push(_element);
         }
 
-        T pop() {return data.pop() }
-        std::queue<T> getData() {return data}
+        T pop() {return data.pop(); }
+        std::queue<T> getData() {return data;}
     };
 
     class ContextContainer
@@ -72,15 +72,15 @@ namespace
     public:
         ContextContainer():begin(3),end(3)
         {
-            
+
         }
-        int push(std::string _row, bool _first) 
+        int push(std::string _row, bool _first)
         {
-            if (_first) 
+            if (_first)
             {
 
             }
-            else 
+            else
             {
 
             }
@@ -189,7 +189,12 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	ui->OldListView->setModelColumn(1);
 	ui->NewListView->setModel(m_diffModel);
 	ui->NewListView->setModelColumn(0);
-    
+
+  ui->OldListView->setMouseTracking(true);
+  ui->NewListView->setMouseTracking(true);
+  
+  m_customDelegate = new CustomDelegate(this);
+
 	ui->NewListView->setItemDelegate(m_customDelegate);
 	ui->OldListView->setItemDelegate(m_customDelegate);
 	onDiffModelDataChange();
@@ -278,12 +283,12 @@ void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _new
         QFileInfo oldFileInfo(_oldFile);
         QFileInfo newFileInfo(_newFile);
         QFile file(_diffFile);
-        if (file.open(QIODevice::ReadWrite)) 
+        if (file.open(QIODevice::ReadWrite))
         {
             QTextStream stream(&file);
 
             int t = oldFileInfo.fileTime(QFileDevice::FileModificationTime).offsetFromUtc() / 3600;
-            stream << "--- " + oldFileInfo.fileName() + '\t' + 
+            stream << "--- " + oldFileInfo.fileName() + '\t' +
                 oldFileInfo.fileTime(QFileDevice::FileModificationTime).toString("yyyy-MM-dd HH:mm:ss.zzz000000 ") +
                 intToUtcOffset(t).c_str()
                 << endl;
@@ -297,7 +302,7 @@ void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _new
 
         }
 
-        
+
     }
 }
 
@@ -310,7 +315,7 @@ void MainWindow::onSetRoot()
 void MainWindow::onInitializeVersionControl()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Select folder to control"), "", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    
+
 }
 
 void MainWindow::onCustomContextMenu(const QPoint &point)
@@ -330,7 +335,7 @@ void MainWindow::onSettingsRequest()
 void MainWindow::onGenerateDiff()
 {
     DialogDiffGen genDialog(this);
-    if (genDialog.exec()) 
+    if (genDialog.exec())
     {
         generateDiffFile(genDialog.getOld(), genDialog.getNew(), genDialog.getPatch(), genDialog.getGenerationType());
         //generateDiffFile("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test2.cpp", "D:/git/VersionControll/diff/testp-u.diff", false);
@@ -347,12 +352,12 @@ void MainWindow::onApplyDiff()
         {
             onDiffModelDataChange();
         }
-        else 
+        else
         {
             QMessageBox msg(QMessageBox::Icon::Critical, "Error", "Parsing diff file failed." );
             msg.exec();
         }
-        
+
     }
 }
 

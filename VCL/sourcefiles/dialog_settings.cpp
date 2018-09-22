@@ -1,6 +1,5 @@
 #include "headerfiles/dialog_settings.h"
 
-#include "GeneratedFiles/ui_dialog_settings_color.h"
 #include "headerfiles/config_manager.h"
 
 #include <QtWidgets/qpushbutton.h>
@@ -127,7 +126,7 @@ void DialogSettings::onSelectedItem(const QModelIndex &index)
         QStringList keys = m_model.data(index, Qt::UserRole).toStringList();
         QString title = item->text();
         wdg->verticalLayout->addWidget(new QLabel(title,this));
-        for each (QString var in keys)
+        for(QString var : keys)
         {
             if (var.split('/').last() == "Font")
             {
@@ -140,7 +139,7 @@ void DialogSettings::onSelectedItem(const QModelIndex &index)
         }
         widget->show();
 
-        
+
     }
     else
     {
