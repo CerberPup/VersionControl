@@ -18,16 +18,17 @@ CustomDelegate::CustomDelegate(QObject *parent)
 	: QStyledItemDelegate(parent)
     , maxRow(0)
 {
-    //connect(QApplication::instance(),SIGNAL(fontChanged(QFont)),this,SLOT(onFontChanged(QFont)));
+
 }
 
 CustomDelegate::~CustomDelegate()
 {
 }
 
-void CustomDelegate::onFontChanged(QFont font)
+void CustomDelegate::onFontChanged()
 {
-    maxLineNumberSize = QApplication::fontMetrics().boundingRect(int2PlaceHolder(maxRow)).size();
+    if(maxRow!=0)
+        maxLineNumberSize = QApplication::fontMetrics().boundingRect(int2PlaceHolder(maxRow)).size();
 }
 
 QSize CustomDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const

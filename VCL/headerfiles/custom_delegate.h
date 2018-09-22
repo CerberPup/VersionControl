@@ -13,8 +13,8 @@ private:
     int maxRow;
     QSize maxLineNumberSize;
 
-private slots:
-    void onFontChanged(QFont font);
+public slots:
+    void onFontChanged();
 public:
 	CustomDelegate(QObject *parent);
 	~CustomDelegate();

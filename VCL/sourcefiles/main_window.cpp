@@ -174,7 +174,6 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
     m_diffModel = new DiffModel(this, m_customDelegate);
     ConfigManager::getInstance().initialize(QCoreApplication::applicationDirPath());
     QApplication::setFont(ConfigManager::getInstance().getQFont(ConfigKeys::FontKey));
-
     ui->setupUi(this);
 
 	ui->DirectoryTreeView->setModel(m_directoryModel);
@@ -190,10 +189,8 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	ui->NewListView->setModel(m_diffModel);
 	ui->NewListView->setModelColumn(0);
 
-  ui->OldListView->setMouseTracking(true);
-  ui->NewListView->setMouseTracking(true);
-  
-  m_customDelegate = new CustomDelegate(this);
+    ui->OldListView->setMouseTracking(true);
+    ui->NewListView->setMouseTracking(true);
 
 	ui->NewListView->setItemDelegate(m_customDelegate);
 	ui->OldListView->setItemDelegate(m_customDelegate);
@@ -329,6 +326,7 @@ void MainWindow::onCustomContextMenu(const QPoint &point)
 void MainWindow::onSettingsRequest()
 {
     DialogSettings settingsDialog(this);
+    connect(&settingsDialog, SIGNAL(fontChanged()), m_customDelegate, SLOT(onFontChanged()));
     settingsDialog.exec();
 }
 

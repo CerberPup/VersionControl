@@ -49,6 +49,7 @@ void FontPickingWidget::onFontChoose()
         ConfigManager::getInstance().setQFont(m_key, dialog.selectedFont());
         QApplication::setFont(dialog.selectedFont());
         m_fontLabel->setFont(dialog.selectedFont());
+        emit fontChanged();
     }
 
 }
@@ -95,7 +96,9 @@ void DialogSettings::createColorRow(QString label, QString key)
 
 void DialogSettings::createFontRow(QString label, QString key)
 {
-    wdg->verticalLayout->addWidget(new FontPickingWidget(label, key, this));
+    FontPickingWidget* fontWidget = new FontPickingWidget(label, key, this);
+    connect(fontWidget, SIGNAL(fontChanged()), this, SIGNAL(fontChanged()));
+    wdg->verticalLayout->addWidget(fontWidget);
 }
 
 DialogSettings::DialogSettings(QWidget *parent)

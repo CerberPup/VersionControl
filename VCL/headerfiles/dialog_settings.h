@@ -11,15 +11,19 @@ class FontPickingWidget :public QWidget
 {
     Q_OBJECT
 
-public:
-    FontPickingWidget(QString label, QString key, QWidget* parrent);
-
 private:
     QString m_key;
     QLabel* m_fontLabel;
 
 private slots:
     void onFontChoose();
+
+public:
+    FontPickingWidget(QString label, QString key, QWidget* parrent);
+
+signals:
+    void fontChanged();
+
 };
 
 class ColorPickingWidget :public QWidget
@@ -55,6 +59,8 @@ public:
     DialogSettings(QWidget *parent);
     ~DialogSettings();
 
+signals:
+    void fontChanged();
 };
 
 #endif // !DIALOG_SETTINGS_H
