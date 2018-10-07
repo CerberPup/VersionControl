@@ -32,6 +32,7 @@ SOURCES += \
         sourcefiles/dialog_diff_apply.cpp \
         sourcefiles/dialog_diff_gen.cpp \
         sourcefiles/dialog_settings.cpp \
+        sourcefiles/diff_generator.cpp \
         sourcefiles/diff_model.cpp \
         sourcefiles/main.cpp \
         sourcefiles/main_window.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
         headerfiles/dialog_diff_apply.h \
         headerfiles/dialog_diff_gen.h \
         headerfiles/dialog_settings.h \
+        headerfiles/diff_generator.h \
         headerfiles/diff_model.h \
         headerfiles/main_window.h \
         headerfiles/modified_file_system_model.h \

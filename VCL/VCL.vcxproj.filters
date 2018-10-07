@@ -70,6 +70,9 @@
     <ClCompile Include="sourcefiles\dialog_settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sourcefiles\diff_generator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -120,6 +123,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_dialog_settings_color.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headerfiles\diff_generator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

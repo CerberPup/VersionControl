@@ -1,14 +1,18 @@
 #include "headerfiles/main_window.h"
 
+#include "headerfiles/diff_generator.h"
 #include "headerfiles/config_manager.h"
 #include "headerfiles/custom_delegate.h"
 #include "headerfiles/dialog_diff_apply.h"
 #include "headerfiles/dialog_diff_gen.h"
 #include "headerfiles/dialog_settings.h"
+
+
 #include "ui_mainwindow.h"
 
 #include <queue>
 #include <fstream>
+#include <set>
 
 #include <QDateTime>
 #include <QFileDialog>
@@ -16,8 +20,7 @@
 #include <QScrollBar>
 #include <QTextStream>
 
-namespace
-{
+namespace {
     std::string intToUtcOffset(int &hours)
     {
         std::string returnValue;
@@ -40,129 +43,11 @@ namespace
             }
             else
             {
-                returnValue = "-" + std::to_string(hours) +  "00";
+                returnValue = "-" + std::to_string(hours) + "00";
             }
         }
         return returnValue;
     }
-
-    template <class T> class FifoContainer
-    {
-        std::queue<T> data;
-        size_t size;
-    public:
-        FifoContainer(size_t _size):size(_size){}
-
-        void push(T _element)
-        {
-            if (data.size() == size)
-                data.pop();
-            data.push(_element);
-        }
-
-        T pop() {return data.pop(); }
-        std::queue<T> getData() {return data;}
-    };
-
-    class ContextContainer
-    {
-        FifoContainer<std::string> begin;
-        FifoContainer<std::string> end;
-        std::queue<std::string> data;
-    public:
-        ContextContainer():begin(3),end(3)
-        {
-
-        }
-        int push(std::string _row, bool _first)
-        {
-            if (_first)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-    };
-    class MagicInvoker
-    {
-        typedef std::map<size_t, std::string> rawContainer;
-        std::string oldFilePath;
-        std::string newFilePath;
-        rawContainer rawDataOld;
-        rawContainer rawDataNew;
-
-        void insertData(const std::string& _data, size_t _row, bool _oldFile)
-        {
-            if (_oldFile)
-            {
-                rawContainer::iterator it = rawDataNew.find(_row);
-                if (it != rawDataNew.end())
-                {
-                    rawDataNew.erase(it);
-                    return;
-                }
-                else
-                {
-                    rawDataOld[_row] = _data;
-                    return;
-                }
-            }
-            else
-            {
-                rawContainer::iterator it = rawDataOld.find(_row);
-                if (it != rawDataOld.end())
-                {
-                    rawDataOld.erase(it);
-                    return;
-                }
-                else
-                {
-                    rawDataNew[_row] = _data;
-                    return;
-                }
-            }
-        }
-
-    public:
-        MagicInvoker(std::string _oldFilePath, std::string _newFilePath)
-            : oldFilePath(_oldFilePath)
-            , newFilePath(_newFilePath)
-        {
-            size_t row = 0;
-            std::string bufor;
-            std::ifstream oldFile(_oldFilePath, std::ios::in);
-            std::ifstream newFile(_newFilePath, std::ios::in);
-            if (oldFile.good() && newFile.good())
-            {
-                while (!oldFile.eof()&& !newFile.eof())
-                {
-                    std::getline(oldFile, bufor);
-                    insertData(bufor, row, true);
-                    std::getline(newFile, bufor);
-                    insertData(bufor, row, false);
-                    row++;
-                }
-                while (!oldFile.eof())
-                {
-                    std::getline(oldFile, bufor);
-                    insertData(bufor, row, true);
-                    row++;
-                }
-                while (!newFile.eof())
-                {
-                    std::getline(newFile, bufor);
-                    insertData(bufor, row, false);
-                    row++;
-                }
-                oldFile.close();
-                newFile.close();
-            }
-        }
-    };
-
 }
 
 MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
@@ -280,6 +165,7 @@ void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _new
         QFileInfo oldFileInfo(_oldFile);
         QFileInfo newFileInfo(_newFile);
         QFile file(_diffFile);
+        file.remove();
         if (file.open(QIODevice::ReadWrite))
         {
             QTextStream stream(&file);
@@ -295,8 +181,8 @@ void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _new
                 newFileInfo.fileTime(QFileDevice::FileModificationTime).toString("yyyy-MM-dd HH:mm:ss.zzz000000 ") +
                 intToUtcOffset(t).c_str()
                 << endl;
-            MagicInvoker i(_oldFile.toStdString(), _newFile.toStdString());
-
+            DiffGenerator::MagicInvoker i(_oldFile.toStdString(), _newFile.toStdString());
+            i.save(stream);
         }
 
 
@@ -333,10 +219,10 @@ void MainWindow::onSettingsRequest()
 void MainWindow::onGenerateDiff()
 {
     DialogDiffGen genDialog(this);
-    if (genDialog.exec())
+    //if (genDialog.exec())
     {
-        generateDiffFile(genDialog.getOld(), genDialog.getNew(), genDialog.getPatch(), genDialog.getGenerationType());
-        //generateDiffFile("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test2.cpp", "D:/git/VersionControll/diff/testp-u.diff", false);
+        //generateDiffFile(genDialog.getOld(), genDialog.getNew(), genDialog.getPatch(), genDialog.getGenerationType());
+        generateDiffFile("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test2.cpp", "D:/git/VersionControll/diff/testp-u.diff", false);
     }
 }
 
