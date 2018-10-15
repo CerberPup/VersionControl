@@ -16,7 +16,8 @@ namespace DT
 		Added = 0,
 		Changed,
 		Removed,
-		Unchanged
+		Unchanged,
+        Comment
 	};
 
 	struct diffRowData {

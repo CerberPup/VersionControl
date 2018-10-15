@@ -48,6 +48,7 @@ namespace DiffGenerator
     public:
         ContextContainer();
 
+        bool hasData() const;
         int getBeginning() const;
         void setBeginning(const int _beggining);
         int getBefore() const;
@@ -60,6 +61,9 @@ namespace DiffGenerator
 
     class MagicInvoker
     {
+        bool hasNewLineAtEndInOldFile;
+        bool hasNewLineAtEndInNewFile;
+
         std::string oldFilePath;
         std::string newFilePath;
         std::list<std::string> rawDataOld;

@@ -110,9 +110,10 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
         painter->setBrush(status2BackGroundColor[var.first]);
         painter->drawRect(paintArea);
         painter->restore();
+        painter->save();
 		painter->setPen(status2ForeGroundColor[var.first]);
 		painter->drawText(paintArea, toDisplay);
-
+        painter->restore();
 	}
 
 	painter->restore();

@@ -4,11 +4,23 @@
 
 namespace DiffGenerator
 {
+    namespace {
+        void breakDown(rawContainer& cont, rawContainer::reverse_iterator _what)
+        {
+            _what->second = DT::lineStatus::Removed;
+            cont.push_back(std::make_pair(_what->first, DT::lineStatus::Added));
+        }
+    }
 
     ContextContainer::ContextContainer() :begin(3)
     {
         missed = 0;
         beginning = 1;
+    }
+
+    bool ContextContainer::hasData() const
+    {
+        return !dataElements.empty();
     }
 
     int ContextContainer::getBeginning() const
@@ -118,9 +130,32 @@ namespace DiffGenerator
     void ContextContainer::pushBack(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status)
     {
         missed = 0;
-        for (std::list<std::string>::iterator it = _begin; it != _end; it++)
+        if (_status == DT::Removed)
         {
-            dataElements.push_back(std::make_pair(*it, _status));
+            auto insertIterator = std::find_if(dataElements.rbegin(), dataElements.rend(), [](data_t &element)->bool {return element.second == DT::Added || element.second == DT::Unchanged; });
+            if (insertIterator != dataElements.rend())
+            {
+                if(insertIterator->second == DT::Added)
+                    insertIterator = std::next(insertIterator, 1);
+                for (std::list<std::string>::iterator it = _begin; it != _end; it++)
+                {
+                    dataElements.emplace(insertIterator.base(), std::make_pair(*it, _status));
+                }
+            }
+            else
+            {
+                for (std::list<std::string>::iterator it = _begin; it != _end; it++)
+                {
+                    dataElements.push_back(std::make_pair(*it, _status));
+                }
+            }
+        }
+        else
+        {
+            for (std::list<std::string>::iterator it = _begin; it != _end; it++)
+            {
+                dataElements.push_back(std::make_pair(*it, _status));
+            }
         }
     }
 
@@ -149,6 +184,8 @@ namespace DiffGenerator
                 rawDataNew.push_back(bufor);
             }
             newFile.close();
+            hasNewLineAtEndInOldFile = *rawDataOld.crbegin() == "";
+            hasNewLineAtEndInNewFile = *rawDataNew.crbegin() == "";
             doDiff();
         }
     }
@@ -187,6 +224,7 @@ namespace DiffGenerator
                 }
                 rawDataOld.pop_front();
                 rawDataNew.pop_front();
+                
             }
             else
             {
@@ -250,29 +288,100 @@ namespace DiffGenerator
         int diffrence = 0;
         int before;
         int after;
-        for (ContextContainer cont : ContextList)
+        bool lastContainerWasEmpty = false;
+        if (!ContextList.rbegin()->hasData())
+        {
+            lastContainerWasEmpty = true;
+            ContextList.pop_back();
+        }
+        for (std::vector<ContextContainer>::iterator it = ContextList.begin();it!= ContextList.end();it++)
         {
             //@@ -row,after +(row+diffrencebefore),after @@
-            before = cont.getBefore();
-            after = cont.getAfter();
-            stream << "@@ -" << cont.getBeginning() << ',' << before << " +" << (cont.getBeginning() + diffrence) << ',' << after << " @@" << endl;
-            for (std::pair<std::string, DT::lineStatus> row : cont.getData())
+            before = it->getBefore();
+            after = it->getAfter();
+            stream << "@@ -" << it->getBeginning() << ',' << before << " +" << (it->getBeginning() + diffrence) << ',' << after << " @@" << endl;
+            auto rowContainer = it->getData();
+            bool noLineAtEnd = false;
+            if (std::distance(it, ContextList.end()) == 1)
             {
-                switch (row.second)
+                auto lastAdded = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Added; });
+                auto lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
+                auto lastUnchangedForAdded = std::find_if(rowContainer.rbegin(), lastAdded, [](data_t &element)->bool {return element.second == DT::Unchanged; });
+                auto lastUnchangedForRemoved = std::find_if(rowContainer.rbegin(), lastRemoved, [](data_t &element)->bool {return element.second == DT::Unchanged; });
+
+                if (rowContainer.rbegin()->second == DT::Unchanged && !hasNewLineAtEndInNewFile && !hasNewLineAtEndInOldFile)
                 {
-                case DT::Unchanged:
-                    stream << ' ';
-                    break;
-                case DT::Removed:
-                    stream << '-';
-                    break;
-                case DT::Added:
-                    stream << '+';
-                    break;
-                default:
-                    break;
+                    noLineAtEnd = true;
                 }
-                stream << row.first.c_str() << endl;
+                else
+                {
+                    //Trzeba rozibæ element pod iteratorem last...
+                    if (!hasNewLineAtEndInNewFile && lastUnchangedForAdded != lastAdded)
+                    {
+                        breakDown(rowContainer, lastUnchangedForAdded);
+                        lastAdded = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Added; });
+                        lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
+                    }
+                    //Trzeba rozbiæ element pod iteratorem last...
+                    else if (!hasNewLineAtEndInOldFile && lastUnchangedForRemoved != lastRemoved)
+                    {
+                        breakDown(rowContainer, lastUnchangedForRemoved);
+                        lastAdded = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Added; });
+                        lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
+                    }
+                }
+                for (rawContainer::iterator row = rowContainer.begin(); row != rowContainer.end(); row++)
+                {
+                    switch (row->second)
+                    {
+                    case DT::Unchanged:
+                        stream << ' ';
+                        break;
+                    case DT::Removed:
+                        stream << '-';
+                        break;
+                    case DT::Added:
+                        stream << '+';
+                        break;
+                    default:
+                        break;
+                    }
+                    stream << row->first.c_str() << endl;
+                    
+                    if (!noLineAtEnd)
+                    {
+                        if (row == std::next(lastAdded, 1).base())
+                        {
+                            stream << "\\ No newline at end of file" << endl;
+                        }
+                        else if (row == std::next(lastRemoved, 1).base())
+                        {
+                            stream << "\\ No newline at end of file" << endl;
+                        }
+                    }
+                }
+                if(noLineAtEnd)
+                    stream << "\\ No newline at end of file" << endl;
+            }
+            else {
+                for (rawContainer::iterator row = rowContainer.begin(); row != rowContainer.end(); row++)
+                {
+                    switch (row->second)
+                    {
+                    case DT::Unchanged:
+                        stream << ' ';
+                        break;
+                    case DT::Removed:
+                        stream << '-';
+                        break;
+                    case DT::Added:
+                        stream << '+';
+                        break;
+                    default:
+                        break;
+                    }
+                    stream << row->first.c_str() << endl;
+                }
             }
             diffrence += after - before;
         }

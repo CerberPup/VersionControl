@@ -27,6 +27,98 @@ namespace
 		}*/
 		return input;
 	}
+
+    class SinglePatch {
+        std::list<std::pair<QString,DT::lineStatus>> data;
+        //std::list<QString>::iterator cloneFrom;
+    public:
+        SinglePatch(/*std::list<QString>::iterator& latestCloned*/)/*:cloneFrom(latestCloned)*/ {}
+
+        void addLine(QString _line, DT::lineStatus _status)
+        {
+            data.push_back(std::make_pair(_line,_status));
+        }
+
+        std::list<std::pair<QString, DT::lineStatus>>& getData()
+        {
+            return data;
+        }
+
+        bool apply(std::list<DT::diffRowData>& _oldContainer, std::list<DT::diffRowData>& _newContainer, std::list<QString> _rawData)
+        {
+            bool canWork = true;
+            std::list<QString>::iterator beginning = _rawData.begin();
+            while (canWork)
+            {
+                beginning = std::find_if(beginning, _rawData.end(), [this](QString row)->bool {return getData().begin()->first == row; });
+                if (beginning != _rawData.end())
+                {
+                    std::list<std::pair<QString, DT::lineStatus>>::iterator dataIt = data.begin();
+                    for (std::list<QString>::iterator from = beginning; from != _rawData.end(); from++)
+                    {
+                        while (dataIt!= data.end() && !(dataIt->second == DT::Unchanged || dataIt->second == DT::Removed))
+                        {
+                            dataIt = std::next(dataIt, 1);
+                        }
+                        if (dataIt->first == *from)
+                        {
+                            dataIt = std::next(dataIt, 1);
+                            if (dataIt == data.end())
+                            {
+                                canWork = false;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            beginning = std::next(beginning, 1);
+                            break;
+                        }
+                    }
+
+                }
+                else
+                {
+                    canWork = false;
+                }
+            }
+            if (beginning != _rawData.end())
+            {
+
+                //apply patch
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    };
+
+}
+
+void DiffModel::dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added)
+{
+    if (_removed.size() != 0 || _added.size() != 0)
+    {
+        if (_removed.size() != 0 && _added.size() != 0)
+        {
+            m_oldFileData.push_back(_removed);
+            m_newFileData.push_back(_added);
+        }
+        else if (_removed.size() != 0)
+        {
+            m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
+            m_oldFileData.push_back(_removed);
+        }
+        else if (_added.size() != 0)
+        {
+            m_newFileData.push_back(_added);
+            m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
+        }
+        _removed.clear();
+        _added.clear();
+    }
 }
 
 DiffModel::DiffModel(QObject *parent, CustomDelegate *_delegate)
@@ -158,26 +250,7 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 					{
 						bufor.erase(bufor.begin());
 						QString qstring = replaceTabs(QString(bufor.c_str()));
-						if(oldRow.size()!=0 || newRow.size() != 0)
-						{
-							if (oldRow.size() != 0 && newRow.size() != 0) 
-							{
-								m_oldFileData.push_back(oldRow);
-								m_newFileData.push_back(newRow);
-							}
-							else if(oldRow.size() != 0)
-							{ 
-								m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
-								m_oldFileData.push_back(oldRow);
-							}
-							else if (newRow.size() != 0)
-							{
-								m_newFileData.push_back(newRow);
-								m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
-							}
-							oldRow.clear();
-							newRow.clear();
-						}
+                        dumpBuffors(oldRow,newRow);
 						m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, qstring)));
 						m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, qstring)));
 						break;
@@ -197,7 +270,13 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 						newRow.data.push_back((std::make_pair(DT::lineStatus::Added, qstring)));
 						break;
 					}
+                    case '\\':
+                    {
+                        linesAdded--;
+                        break;
+                    }
 					default:
+                        dumpBuffors(oldRow, newRow);
 						nextSection = true;
 						break;
 					}
@@ -220,7 +299,94 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
     endResetModel();
 	return true;
 }
+/*
+bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
+{
+    beginResetModel();
+    std::list<QString>rawData;
+    m_oldFileData.clear();
+    m_newFileData.clear();
+    std::ifstream reader;
+    std::string bufor;
+    reader.open(File);
+    if (reader.good())
+    {
+        while (!reader.eof())
+        {
+            std::getline(reader, bufor);
+            bufor.insert(bufor.end(), '\n');
+            QString tmp = replaceTabs(QString(bufor.c_str()));
+            rawData.push_back(tmp);
+        }
+    }
+    reader.close();
+    reader.open(DiffFile);
+    std::list<QString>::iterator latestCloned = rawData.begin();
+    if (reader.good())
+    {
+        bool afterSection = false;
 
+        std::getline(reader, bufor);
+
+        std::regex pattern("^--- (.*)\\t");
+        std::smatch pieces_match;
+        std::regex_search(bufor, pieces_match, pattern);
+        m_sourceFileName = QString(pieces_match[1].str().c_str());
+        while (!reader.eof())
+        {
+            if (!afterSection)
+                std::getline(reader, bufor);
+            if (bufor[0] == '@' && bufor[1] == '@')
+            {
+                SinglePatch patch(std::list<QString>::iterator latestCloned);
+                bool nextSection = false;
+                while (!reader.eof() && !nextSection)
+                {
+
+                    std::getline(reader, bufor);
+                    bufor.insert(bufor.end(), '\n');
+                    switch (bufor[0])
+                    {
+                    case ' ':
+                    {
+                        bufor.erase(bufor.begin());
+                        patch.addLine(bufor.c_str(), DT::lineStatus::Unchanged);
+                        break;
+                    }
+                    case '-':
+                    {
+                        bufor.erase(bufor.begin());
+                        patch.addLine(bufor.c_str(), DT::lineStatus::Removed);
+                        break;
+                    }
+
+                    case '+':
+                    {
+                        bufor.erase(bufor.begin());
+                        patch.addLine(bufor.c_str(), DT::lineStatus::Added);
+                        break;
+                    }
+                    case '\\':
+                    {
+                        break;
+                    }
+                    default:
+                        patch.apply(m_oldFileData, m_newFileData, rawData);
+                        nextSection = true;
+                        break;
+                    }
+                }
+                afterSection = true;
+                continue;
+            }
+            afterSection = false;
+        }
+    }
+    reader.close();
+    endResetModel();
+    return true;
+}
+*/
 QVariant DiffModel::data(const QModelIndex & index, int role) const
 {
 	//QString a(std::next(changeData.begin(), index.row())->wholeText());
