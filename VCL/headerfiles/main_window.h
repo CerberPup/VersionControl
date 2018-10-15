@@ -8,6 +8,7 @@
 #include "custom_delegate.h"
 #include "diff_model.h"
 #include "modified_file_system_model.h"
+#include "GeneratedFiles/ui_mainwindow.h"
 
 namespace Ui {
 class MainWindow;

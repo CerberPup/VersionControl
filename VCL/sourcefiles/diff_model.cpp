@@ -28,6 +28,30 @@ namespace
 		return input;
 	}
 
+    void dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added , std::list<DT::diffRowData>& _oldContainer, std::list<DT::diffRowData>& _newContainer)
+    {
+        if (_removed.size() != 0 || _added.size() != 0)
+        {
+            if (_removed.size() != 0 && _added.size() != 0)
+            {
+                _newContainer.push_back(_added);
+                _oldContainer.push_back(_removed);
+            }
+            else if (_removed.size() != 0)
+            {
+                _newContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
+                _oldContainer.push_back(_removed);
+            }
+            else if (_added.size() != 0)
+            {
+                _newContainer.push_back(_added);
+                _oldContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
+            }
+            _removed.clear();
+            _added.clear();
+        }
+    }
+
     class SinglePatch {
         std::list<std::pair<QString,DT::lineStatus>> data;
         //std::list<QString>::iterator cloneFrom;
@@ -44,10 +68,11 @@ namespace
             return data;
         }
 
-        bool apply(std::list<DT::diffRowData>& _oldContainer, std::list<DT::diffRowData>& _newContainer, std::list<QString> _rawData)
+        bool apply(std::list<DT::diffRowData>& _oldContainer, std::list<DT::diffRowData>& _newContainer, std::list<QString>& _rawData)
         {
             bool canWork = true;
             std::list<QString>::iterator beginning = _rawData.begin();
+            std::list<QString>::iterator last;
             while (canWork)
             {
                 beginning = std::find_if(beginning, _rawData.end(), [this](QString row)->bool {return getData().begin()->first == row; });
@@ -65,6 +90,7 @@ namespace
                             dataIt = std::next(dataIt, 1);
                             if (dataIt == data.end())
                             {
+                                last = from;
                                 canWork = false;
                                 break;
                             }
@@ -84,12 +110,41 @@ namespace
             }
             if (beginning != _rawData.end())
             {
-
                 //apply patch
+                for (std::list<QString>::iterator unchanged = _rawData.begin(); unchanged != beginning; unchanged++)
+                {
+                    _oldContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *unchanged)));
+                    _newContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *unchanged)));
+                }
+                _rawData.erase(_rawData.begin(),std::next(last,1));
+
+                DT::diffRowData buforOld;
+                DT::diffRowData buforNew;
+                for (auto row: data)
+                {
+                    switch (row.second)
+                    {
+                    case DT::lineStatus::Added:
+                        buforNew.data.push_back((std::make_pair(DT::lineStatus::Added, row.first)));
+                        break;
+                    case DT::lineStatus::Removed:
+                        buforOld.data.push_back((std::make_pair(DT::lineStatus::Removed, row.first)));
+                        break;
+                    case DT::lineStatus::Unchanged:
+                        dumpBuffors(buforOld, buforNew, _oldContainer, _newContainer);
+                        _newContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, row.first)));
+                        _oldContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, row.first)));
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                dumpBuffors(buforOld, buforNew, _oldContainer, _newContainer);
                 return true;
             }
             else
             {
+
                 return false;
             }
         }
@@ -97,7 +152,7 @@ namespace
 
 }
 
-void DiffModel::dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added)
+/*void DiffModel::dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added)
 {
     if (_removed.size() != 0 || _added.size() != 0)
     {
@@ -119,7 +174,7 @@ void DiffModel::dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added)
         _removed.clear();
         _added.clear();
     }
-}
+}*/
 
 DiffModel::DiffModel(QObject *parent, CustomDelegate *_delegate)
 	: QAbstractListModel(parent)
@@ -172,7 +227,7 @@ int DiffModel::columnCount(const QModelIndex&) const
 {
 	return 2;
 }
-
+/*
 bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 {
     beginResetModel();
@@ -298,8 +353,8 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 	reader.close();
     endResetModel();
 	return true;
-}
-/*
+}*/
+
 bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 {
     beginResetModel();
@@ -338,7 +393,7 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
                 std::getline(reader, bufor);
             if (bufor[0] == '@' && bufor[1] == '@')
             {
-                SinglePatch patch(std::list<QString>::iterator latestCloned);
+                SinglePatch patch;
                 bool nextSection = false;
                 while (!reader.eof() && !nextSection)
                 {
@@ -383,10 +438,16 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
         }
     }
     reader.close();
+    while (rawData.size()!=0)
+    {
+        m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, rawData.front())));
+        m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, rawData.front())));
+        rawData.pop_front();
+    }
     endResetModel();
     return true;
 }
-*/
+
 QVariant DiffModel::data(const QModelIndex & index, int role) const
 {
 	//QString a(std::next(changeData.begin(), index.row())->wholeText());

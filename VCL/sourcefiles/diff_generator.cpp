@@ -14,8 +14,14 @@ namespace DiffGenerator
 
     ContextContainer::ContextContainer() :begin(3)
     {
+        forgottenData = false;
         missed = 0;
         beginning = 1;
+    }
+
+    bool ContextContainer::hasForgottenData() const
+    {
+        return forgottenData;
     }
 
     bool ContextContainer::hasData() const
@@ -81,6 +87,7 @@ namespace DiffGenerator
         {
             if (begin.getSize() == 3)
             {
+                forgottenData = true;
                 beginning++;
             }
             begin.push(_row);
@@ -116,6 +123,11 @@ namespace DiffGenerator
         {
             dataElements.push_back(std::make_pair(_row, _status));
         }
+        return false;
+    }
+    bool ContextContainer::pushBack(rawContainer & _newData)
+    {
+        std::copy(_newData.begin(), _newData.end(), std::back_inserter(dataElements));
         return false;
     }
     void ContextContainer::pushFront(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status)
@@ -217,10 +229,11 @@ namespace DiffGenerator
             if (*rawDataOld.begin() == *rawDataNew.begin())
             {
                 currentrow++;
-                if (ContextList[ContextList.size() - 1].pushBack(*rawDataOld.begin(), DT::lineStatus::Unchanged))\
+                if (ContextList[ContextList.size() - 1].pushBack(*rawDataOld.begin(), DT::lineStatus::Unchanged))
                 {
                     ContextList.push_back(ContextContainer());
-                    ContextList[ContextList.size() - 1].setBeginning(currentrow);
+                    ContextList[ContextList.size() - 1].setBeginning(currentrow-1);
+                    ContextList[ContextList.size() - 1].pushBack(*rawDataOld.begin(), DT::lineStatus::Unchanged);
                 }
                 rawDataOld.pop_front();
                 rawDataNew.pop_front();
@@ -228,6 +241,13 @@ namespace DiffGenerator
             }
             else
             {
+                if (ContextList.size()>1 && !ContextList[ContextList.size() - 1].hasData() && !ContextList[ContextList.size() - 1].hasForgottenData())
+                {
+                    //Megre with previous
+                    auto data = ContextList[ContextList.size() - 1].getData();
+                    ContextList[ContextList.size() - 2].pushBack(data);
+                    ContextList.pop_back();
+                }
                 //old[0] == itNew
                 std::list<std::string>::iterator itNew = std::find(rawDataNew.begin(), rawDataNew.end(), *rawDataOld.begin());
                 //new[0] == itOld
@@ -294,12 +314,20 @@ namespace DiffGenerator
             lastContainerWasEmpty = true;
             ContextList.pop_back();
         }
+
+        int prevBeginning = 0;
+        int prevBefore = 0;
+
         for (std::vector<ContextContainer>::iterator it = ContextList.begin();it!= ContextList.end();it++)
         {
             //@@ -row,after +(row+diffrencebefore),after @@
+            
             before = it->getBefore();
             after = it->getAfter();
-            stream << "@@ -" << it->getBeginning() << ',' << before << " +" << (it->getBeginning() + diffrence) << ',' << after << " @@" << endl;
+            if (prevBefore + prevBeginning != it->getBeginning())
+                stream << "@@ -" << it->getBeginning() << ',' << before << " +" << (it->getBeginning() + diffrence) << ',' << after << " @@" << endl;
+            prevBeginning = it->getBeginning();
+            prevBefore = before;
             auto rowContainer = it->getData();
             bool noLineAtEnd = false;
             if (std::distance(it, ContextList.end()) == 1)
@@ -350,11 +378,11 @@ namespace DiffGenerator
                     
                     if (!noLineAtEnd)
                     {
-                        if (row == std::next(lastAdded, 1).base())
+                        if (!hasNewLineAtEndInNewFile && row == std::next(lastAdded, 1).base())
                         {
                             stream << "\\ No newline at end of file" << endl;
                         }
-                        else if (row == std::next(lastRemoved, 1).base())
+                        else if (!hasNewLineAtEndInOldFile && row == std::next(lastRemoved, 1).base())
                         {
                             stream << "\\ No newline at end of file" << endl;
                         }

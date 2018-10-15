@@ -45,8 +45,11 @@ namespace DiffGenerator
         rawContainer dataElements;
         short missed;
         int beginning;
+        bool forgottenData;
     public:
         ContextContainer();
+
+        bool hasForgottenData() const;
 
         bool hasData() const;
         int getBeginning() const;
@@ -55,6 +58,7 @@ namespace DiffGenerator
         int getAfter() const;
         rawContainer getData();
         bool pushBack(std::string _row, DT::lineStatus _status);
+        bool pushBack(rawContainer& _newData);
         void pushFront(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status);
         void pushBack(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status);
     };

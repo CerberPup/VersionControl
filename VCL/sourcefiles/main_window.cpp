@@ -219,20 +219,27 @@ void MainWindow::onSettingsRequest()
 void MainWindow::onGenerateDiff()
 {
     DialogDiffGen genDialog(this);
-    //if (genDialog.exec())
+#ifdef _DEBUG
+    generateDiffFile("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test2.cpp", "D:/git/VersionControll/diff/testp-u.diff", false);
+#else
+    if (genDialog.exec())
     {
-        //generateDiffFile(genDialog.getOld(), genDialog.getNew(), genDialog.getPatch(), genDialog.getGenerationType());
-        generateDiffFile("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test2.cpp", "D:/git/VersionControll/diff/testp-u.diff", false);
+        generateDiffFile(genDialog.getOld(), genDialog.getNew(), genDialog.getPatch(), genDialog.getGenerationType());
     }
+#endif
+    
 }
 
 void MainWindow::onApplyDiff()
 {
     DialogDiffApply applyDialog(this);
-    //if (applyDialog.exec())
+    if (applyDialog.exec())
     {
-        //if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
+#ifdef _DEBUG
         if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/testp-u.diff"))
+#else
+        if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
+#endif
         {
             onDiffModelDataChange();
         }
