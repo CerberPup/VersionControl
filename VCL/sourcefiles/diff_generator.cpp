@@ -232,7 +232,7 @@ namespace DiffGenerator
                 if (ContextList[ContextList.size() - 1].pushBack(*rawDataOld.begin(), DT::lineStatus::Unchanged))
                 {
                     ContextList.push_back(ContextContainer());
-                    ContextList[ContextList.size() - 1].setBeginning(currentrow-1);
+                    ContextList[ContextList.size() - 1].setBeginning(currentrow);
                     ContextList[ContextList.size() - 1].pushBack(*rawDataOld.begin(), DT::lineStatus::Unchanged);
                 }
                 rawDataOld.pop_front();
@@ -324,7 +324,7 @@ namespace DiffGenerator
             
             before = it->getBefore();
             after = it->getAfter();
-            if (prevBefore + prevBeginning != it->getBeginning())
+            //if (prevBefore + prevBeginning != it->getBeginning())
                 stream << "@@ -" << it->getBeginning() << ',' << before << " +" << (it->getBeginning() + diffrence) << ',' << after << " @@" << endl;
             prevBeginning = it->getBeginning();
             prevBefore = before;

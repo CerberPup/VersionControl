@@ -21,6 +21,8 @@ public:
         DiffWindow_changedTextBackGround,
         DiffWindow_removedTextForeground,
         DiffWindow_removedTextBackGround,
+        DiffWindow_conflictedTextForeground,
+        DiffWindow_conflictedTextBackGround,
         DiffWindow_lineNumberOddForeground,
         DiffWindow_lineNumberOddBackground,
         DiffWindow_lineNumberEvenForeground,

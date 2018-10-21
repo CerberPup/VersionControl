@@ -1,8 +1,0 @@
-5c5
-< int main()
----
-> int main(int argc, char** argv)
-7c7
-< 	cout << "test";
----
-> 	cout << argv[0];

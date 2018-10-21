@@ -10,6 +10,8 @@ std::map<ConfigKeys::Colors, QString> ConfigKeys::colorsKeys = {
     { DiffWindow_changedTextBackGround ,"DiffWindow/Changed Text/Background" },//
     { DiffWindow_removedTextForeground ,"DiffWindow/Removed Text/Foreground" },//
     { DiffWindow_removedTextBackGround ,"DiffWindow/Removed Text/Background" },//
+    { DiffWindow_conflictedTextForeground ,"DiffWindow/Conflicted Text/Foreground" },//
+    { DiffWindow_conflictedTextBackGround ,"DiffWindow/Conflicted Text/Background" },//
     { DiffWindow_lineNumberOddForeground ,"DiffWindow/Line Number/Odd/Foreground" },//
     { DiffWindow_lineNumberOddBackground ,"DiffWindow/Line Number/Odd/Background" },//
     { DiffWindow_lineNumberEvenForeground ,"DiffWindow/Line Number/Even/Foreground" },//
@@ -26,6 +28,8 @@ std::map<ConfigKeys::Colors, QColor> ConfigKeys::colorsDefaults = {
     { DiffWindow_changedTextBackGround ,QColor(255,255,255) },
     { DiffWindow_removedTextForeground ,QColor(255,0,0) },
     { DiffWindow_removedTextBackGround ,QColor(255,255,155) },
+    { DiffWindow_conflictedTextForeground ,QColor(255,200,0) },
+    { DiffWindow_conflictedTextBackGround ,QColor(227,78,28) },
     { DiffWindow_lineNumberOddForeground ,QColor(160,160,160) },
     { DiffWindow_lineNumberOddBackground ,QColor(60,60,60) },
     { DiffWindow_lineNumberEvenForeground ,QColor(60,60,60) },

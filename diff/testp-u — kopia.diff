@@ -1,0 +1,37 @@
+--- test.cpp	2018-10-15 10:57:28.339000000 +0200
++++ test2.cpp	2018-10-15 10:57:28.339000000 +0200
+@@ -4,8 +4,8 @@
+ #include <list>
+ 
+ #include <QFontMetrics>
++#include <QMetaType>
+ #include <QString>
+-#include <QTextLayout>
+ 
+ namespace DT
+ {
+@@ -24,7 +24,6 @@
+ 		diffRowData() {}
+ 		diffRowData(std::pair<lineStatus, QString> line) :data(std::list<std::pair<lineStatus, QString>>({ line })) {}
+ 		diffRowData(std::list<std::pair<lineStatus, QString>> _data) :data(std::list<std::pair<lineStatus, QString>>(_data)) {}
+-		void clear() { data.clear(); }
+ 		size_t size() { return data.size(); }
+ 		std::pair<lineStatus, QString>& operator[](int i) { return *std::next(data.begin(),i); }
+ 		QString wholeText() const
+@@ -32,7 +31,7 @@
+ 			QString returnVal;
+                         for (size_t i = 0; i < data.size(); i++)
+ 			{
+-				returnVal += (*std::next(data.begin(),i)).second;
++				returnVal += (*std::next(data.begin(),i)).first;
+ 			}
+ 			returnVal.remove(returnVal.size() - 1, 1);
+ 			return returnVal;
+@@ -39,6 +38,5 @@
+ 		QRect lineTextSize(const QFontMetrics& _metric, QSize _viewSize, int index) {
+ 			QString a = operator[](index).second;
+-			a.remove(a.size() - 1, 1);
+\ No newline at end of file
+ 			QRect tmp = _metric.boundingRect(QRect(QPoint(0, 0), _viewSize), Qt::TextWordWrap, a);
+ 			return tmp;
+ 		}

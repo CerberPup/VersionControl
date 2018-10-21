@@ -70,6 +70,7 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
         status2BackGroundColor[DT::lineStatus::Changed] = status2BackGroundColor[DT::lineStatus::Added];
         status2BackGroundColor[DT::lineStatus::Unchanged] = status2BackGroundColor[DT::lineStatus::Added];
         status2BackGroundColor[DT::lineStatus::Removed] = status2BackGroundColor[DT::lineStatus::Added];
+        status2BackGroundColor[DT::lineStatus::Conflicted] = status2BackGroundColor[DT::lineStatus::Added];
     }
     else
     {
@@ -77,12 +78,14 @@ void CustomDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
         status2BackGroundColor[DT::lineStatus::Changed] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_changedTextBackGround);
         status2BackGroundColor[DT::lineStatus::Unchanged] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_unchangedTextBackGround);
         status2BackGroundColor[DT::lineStatus::Removed] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_removedTextBackGround);
+        status2BackGroundColor[DT::lineStatus::Conflicted] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_conflictedTextBackGround);
     }
 
     status2ForeGroundColor[DT::lineStatus::Added] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_addedTextForeground);
     status2ForeGroundColor[DT::lineStatus::Changed] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_changedTextForeground);
     status2ForeGroundColor[DT::lineStatus::Unchanged] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_unchangedTextForeground);
     status2ForeGroundColor[DT::lineStatus::Removed] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_removedTextForeground);
+    status2ForeGroundColor[DT::lineStatus::Conflicted] = ConfigManager::getInstance().getQColor(ConfigKeys::Colors::DiffWindow_conflictedTextForeground);
 
     if (option.state & QStyle::State_Selected || option.state & QStyle::StateFlag::State_MouseOver)
     {

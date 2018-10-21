@@ -1,26 +1,19 @@
---- test.cpp	2018-08-30 19:32:15.781000000 +0200
-+++ test2.cpp	2018-08-30 19:32:19.773000000 +0200
-@@ -25,7 +25,6 @@
- 		diffRowData() {}
- 		diffRowData(std::pair<lineStatus, QString> line) :data(std::list<std::pair<lineStatus, QString>>({ line })) {}
- 		diffRowData(std::list<std::pair<lineStatus, QString>> _data) :data(std::list<std::pair<lineStatus, QString>>(_data)) {}
--		void clear() { data.clear(); }
- 		size_t size() { return data.size(); }
- 		std::pair<lineStatus, QString>& operator[](int i) { return *std::next(data.begin(),i); }
- 		QString wholeText() const
-@@ -33,14 +32,13 @@
- 			QString returnVal;
-                         for (size_t i = 0; i < data.size(); i++)
- 			{
--				returnVal += (*std::next(data.begin(),i)).second;
-+				returnVal += (*std::next(data.begin(),i)).first;
- 			}
- 			returnVal.remove(returnVal.size() - 1, 1);
- 			return returnVal;
+--- test.cpp	2018-10-20 13:14:58.384000000 +0200
++++ test2.cpp	2018-10-20 13:14:59.032000000 +0200
+@@ -7,14 +7,14 @@
+ {
+ 	{
+ 		{
+-			abc
++			cda
  		}
- 		QRect lineTextSize(const QFontMetrics& _metric, QSize _viewSize, int index) {
- 			QString a = operator[](index).second;
--			a.remove(a.size() - 1, 1);
- 			QRect tmp = _metric.boundingRect(QRect(QPoint(0, 0), _viewSize), Qt::TextWordWrap, a);
- 			return tmp;
+ 	}
+ }
+ {
+ 	{
+ 		{
+-			vac
++			bac
  		}
+ 	}
+ }

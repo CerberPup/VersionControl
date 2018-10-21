@@ -233,7 +233,9 @@ void MainWindow::onGenerateDiff()
 void MainWindow::onApplyDiff()
 {
     DialogDiffApply applyDialog(this);
+#ifndef _DEBUG
     if (applyDialog.exec())
+#endif // !_DEBUG
     {
 #ifdef _DEBUG
         if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/testp-u.diff"))

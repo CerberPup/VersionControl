@@ -17,7 +17,8 @@ namespace DT
 		Changed,
 		Removed,
 		Unchanged,
-        Comment
+        Comment,
+        Conflicted
 	};
 
 	struct diffRowData {
