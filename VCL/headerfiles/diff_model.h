@@ -22,6 +22,14 @@ private:
     const CustomDelegate* m_del;
     void dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added);
 public:
+    enum version
+    {
+        left = 0,
+        right,
+        leftOnRight,
+        RightOnLeft
+    };
+
 	DiffModel(QObject *parent, CustomDelegate *_delegate);
 	~DiffModel();
     QString getSourceFileName();
@@ -32,6 +40,9 @@ public:
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 	void setOldFileViewSize(QSize _size);
 	void setNewFileViewSize(QSize _size);
+
+public slots:
+    void setVersion(QModelIndex _index, version _how);
 };
 
 #endif // !DIFFMODEL_H

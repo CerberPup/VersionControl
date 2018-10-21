@@ -28,6 +28,12 @@ namespace DT
 		diffRowData(std::pair<lineStatus, QString> line) :data(std::list<std::pair<lineStatus, QString>>({ line })) {}
 		diffRowData(std::list<std::pair<lineStatus, QString>> _data) :data(std::list<std::pair<lineStatus, QString>>(_data)) {}
 		void clear() { data.clear(); }
+        void setAll(lineStatus _status) {
+            for (auto it = data.begin(); it != data.end(); it++)
+            {
+                *it = std::make_pair(_status, it->second);
+            }
+        }
 		size_t size() { return data.size(); }
 		std::pair<lineStatus, QString>& operator[](int i) { return *std::next(data.begin(),i); }
 		QString wholeText() const

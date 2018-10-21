@@ -110,11 +110,16 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 	connect(ui->splitter_3, SIGNAL(splitterMoved(int, int)), this, SLOT(onSplitterMove(int, int)));
 	onSplitterMove(0, 0);
 
-	contextMenu = new QMenu(ui->DirectoryTreeView);
-	contextMenu->addAction("Set as Root", this, SLOT(onChangeRoot()));
-	contextMenu->addAction("Clear Root",this,SLOT(onClearRoot()));
+	m_directoryContextMenu = new QMenu(ui->DirectoryTreeView);
+	m_directoryContextMenu->addAction("Set as Root", this, SLOT(onChangeRoot()));
+	m_directoryContextMenu->addAction("Clear Root",this,SLOT(onClearRoot()));
 	ui->DirectoryTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(ui->DirectoryTreeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenu(const QPoint &)));
+	connect(ui->DirectoryTreeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenuDirectory(const QPoint &)));
+
+    ui->OldListView->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->NewListView->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->OldListView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenuDiff(const QPoint &)));
+	connect(ui->NewListView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(onCustomContextMenuDiff(const QPoint &)));
 }
 
 MainWindow::~MainWindow()
@@ -201,11 +206,43 @@ void MainWindow::onInitializeVersionControl()
 
 }
 
-void MainWindow::onCustomContextMenu(const QPoint &point)
+void MainWindow::onCustomContextMenuDirectory(const QPoint &point)
 {
 	QModelIndex index = ui->DirectoryTreeView->indexAt(point);
 	if (index.isValid()) {
-		contextMenu->exec(ui->DirectoryTreeView->mapToGlobal(point));
+		m_directoryContextMenu->exec(ui->DirectoryTreeView->mapToGlobal(point));
+	}
+}
+void MainWindow::onCustomContextMenuDiff(const QPoint &point)
+{
+    
+    QModelIndex index;
+    if (sender() == ui->NewListView)
+    {
+        index = ui->NewListView->indexAt(point);
+    }
+    else
+    {
+        index = ui->OldListView->indexAt(point);
+    }
+
+	
+	if (index.isValid()) {
+        QMenu menu;
+        DT::diffRowData data = index.data().value<DT::diffRowData>();
+        if (index.column()==1)//old view
+        {
+            menu.addAction("Preffer left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::left); });
+            menu.addAction("Preffer right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::right); });
+            menu.exec(ui->OldListView->mapToGlobal(point));
+        }
+        else//new view
+        {
+            menu.addAction("Settings", this, SLOT(onSettingsRequest()));
+            menu.exec(ui->NewListView->mapToGlobal(point));
+        }
+
+		
 	}
 }
 

@@ -25,7 +25,8 @@ public:
 
 public slots:
 	void onSplitterMove(int pos, int index);
-	void onCustomContextMenu(const QPoint &point);
+	void onCustomContextMenuDirectory(const QPoint &point);
+	void onCustomContextMenuDiff(const QPoint &point);
     void onSettingsRequest();
 	void onGenerateDiff();
 	void onApplyDiff();
@@ -35,13 +36,16 @@ public slots:
 	void onChangeRoot();
 	void onClearRoot();
 
+public:
+    DiffModel * m_diffModel;
 private:
     void onDiffModelDataChange();
     void generateDiffFile(const QString& _oldFile, const QString& _newFile, const QString& _diffFile, const bool& _systemGenerator);
 
-	QMenu * contextMenu;
+	QMenu * m_directoryContextMenu;
+	QMenu * m_diffContextMenu;
     Ui::MainWindow *ui;
-	DiffModel* m_diffModel;
+	
 	ModifiedFileSystemModel* m_directoryModel;
     CustomDelegate* m_customDelegate;
 	int m_currentSliderValue;

@@ -710,6 +710,35 @@ QVariant DiffModel::data(const QModelIndex & index, int role) const
 	return QVariant();
 }
 
+void DiffModel::setVersion(QModelIndex _index, version _how)
+{
+    switch (_how)
+    {
+    case DiffModel::left:
+        std::next(m_oldFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
+        *std::next(m_newFileData.begin(), _index.row()) = *std::next(m_oldFileData.begin(), _index.row());
+        break;
+    case DiffModel::right:
+        std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
+        *std::next(m_oldFileData.begin(), _index.row()) = *std::next(m_newFileData.begin(), _index.row());
+        break;
+    case DiffModel::leftOnRight:
+        std::next(m_oldFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
+        std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
+
+        break;
+    case DiffModel::RightOnLeft:
+        std::next(m_oldFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
+        std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
+
+        break;
+    default:
+        break;
+    }
+    beginResetModel();
+    endResetModel();
+}
+
 void DiffModel::setOldFileViewSize(QSize _size)
 {
 	m_oldFileViewSize = _size;
