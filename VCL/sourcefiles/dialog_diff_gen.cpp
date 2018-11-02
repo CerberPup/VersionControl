@@ -26,9 +26,26 @@ DialogDiffGen::~DialogDiffGen()
 {
 }
 
-bool DialogDiffGen::getGenerationType()
+/*generatorType DialogDiffGen::getGenerationType()
 {
     return radioButton->isChecked();
+}*/
+
+DialogDiffGen::generatorType DialogDiffGen::getGenerationType()
+{
+    if (radioButtonUser->isChecked())
+    {
+        return generatorType::user;
+    }
+    if (radioButtonSystem->isChecked())
+    {
+        return generatorType::system;
+    }
+    if (radioButtonProgram->isChecked())
+    {
+        return generatorType::program;
+    }
+    return generatorType();
 }
 
 QString DialogDiffGen::getOld()

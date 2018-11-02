@@ -4,7 +4,6 @@
 #include "headerfiles/config_manager.h"
 #include "headerfiles/custom_delegate.h"
 #include "headerfiles/dialog_diff_apply.h"
-#include "headerfiles/dialog_diff_gen.h"
 #include "headerfiles/dialog_settings.h"
 
 
@@ -50,7 +49,7 @@ namespace {
     }
 }
 
-MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
+MainWindow::MainWindow(int argc, char *argv[],QWidget *parent)
 	: QMainWindow(parent)
     , ui(new Ui::MainWindow)
 	, m_directoryModel(new ModifiedFileSystemModel(this))
@@ -107,7 +106,7 @@ MainWindow::MainWindow(int /*argc*/, char ** /*argv*/,QWidget *parent)
 
     connect(ui->splitter  , SIGNAL(splitterMoved(int, int)), this, SLOT(onSplitterMove(int, int)));
 	connect(ui->splitter_2, SIGNAL(splitterMoved(int, int)), this, SLOT(onSplitterMove(int, int)));
-	connect(ui->splitter_3, SIGNAL(splitterMoved(int, int)), this, SLOT(onSplitterMove(int, int)));
+	//connect(ui->splitter_3, SIGNAL(splitterMoved(int, int)), this, SLOT(onSplitterMove(int, int)));
 	onSplitterMove(0, 0);
 
 	m_directoryContextMenu = new QMenu(ui->DirectoryTreeView);
@@ -153,44 +152,62 @@ void MainWindow::onDiffModelDataChange()
     m_customDelegate->maxNumber(m_diffModel->rowCount());
 }
 
-void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _newFile, const QString & _diffFile, const bool & _systemGenerator)
+void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _newFile, const QString & _diffFile, const DialogDiffGen::generatorType & _systemGenerator)
 {
-    if (_systemGenerator)
+    switch (_systemGenerator)
     {
+    case DialogDiffGen::generatorType::system:
+        {
 #ifndef _WIN32
-        std::string command = "diff -u " + _oldFile.toUtf8().toStdString()+" " + _newFile.toUtf8().toStdString() + " > " + _diffFile.toUtf8().toStdString();
+        std::string command = "diff -u " + _oldFile.toUtf8().toStdString() + " " + _newFile.toUtf8().toStdString() + " > " + _diffFile.toUtf8().toStdString();
         system(command.c_str());
 #else
         QMessageBox(QMessageBox::Icon::Warning, "Warning", "Windows doesn't have any good diff tool.");
 #endif // !_WIN32
-
-    }
-    else
-    {
-        QFileInfo oldFileInfo(_oldFile);
-        QFileInfo newFileInfo(_newFile);
-        QFile file(_diffFile);
-        file.remove();
-        if (file.open(QIODevice::ReadWrite))
-        {
-            QTextStream stream(&file);
-
-            int t = oldFileInfo.fileTime(QFileDevice::FileModificationTime).offsetFromUtc() / 3600;
-            stream << "--- " + oldFileInfo.fileName() + '\t' +
-                oldFileInfo.fileTime(QFileDevice::FileModificationTime).toString("yyyy-MM-dd HH:mm:ss.zzz000000 ") +
-                intToUtcOffset(t).c_str()
-                << endl;
-
-            t = newFileInfo.fileTime(QFileDevice::FileModificationTime).offsetFromUtc() / 3600;
-            stream << "+++ " + newFileInfo.fileName() + '\t' +
-                newFileInfo.fileTime(QFileDevice::FileModificationTime).toString("yyyy-MM-dd HH:mm:ss.zzz000000 ") +
-                intToUtcOffset(t).c_str()
-                << endl;
-            DiffGenerator::MagicInvoker i(_oldFile.toStdString(), _newFile.toStdString());
-            i.save(stream);
         }
+        break;
+    case DialogDiffGen::generatorType::user:
+        {
+            QString cmd = ConfigManager::getInstance().getQString(ConfigKeys::GeneratorKey + "/Executable");
+            cmd += " " + ConfigManager::getInstance().getQString(ConfigKeys::GeneratorKey + "/Attributes");
+            cmd = cmd.replace("$1", _oldFile);
+            cmd = cmd.replace("$2", _newFile);
+            cmd = cmd.replace("$3", _diffFile);
+            cmd = cmd.replace("$F", _oldFile.split(QRegExp("(\\\\|/)+")).last());
+            cmd = cmd.replace("$S", _newFile.split(QRegExp("(\\\\|/)+")).last());
+            cmd = cmd.replace("$O", _diffFile.split(QRegExp("(\\\\|/)+")).last());
+            system(cmd.toStdString().c_str());
+        }
+    break;
+    case DialogDiffGen::generatorType::program:
+        {
+            QFileInfo oldFileInfo(_oldFile);
+            QFileInfo newFileInfo(_newFile);
+            QFile file(_diffFile);
+            file.remove();
+            if (file.open(QIODevice::ReadWrite))
+            {
+                QTextStream stream(&file);
 
+                int t = oldFileInfo.fileTime(QFileDevice::FileModificationTime).offsetFromUtc() / 3600;
+                stream << "--- " + oldFileInfo.fileName() + '\t' +
+                    oldFileInfo.fileTime(QFileDevice::FileModificationTime).toString("yyyy-MM-dd HH:mm:ss.zzz000000 ") +
+                    intToUtcOffset(t).c_str()
+                    << endl;
 
+                t = newFileInfo.fileTime(QFileDevice::FileModificationTime).offsetFromUtc() / 3600;
+                stream << "+++ " + newFileInfo.fileName() + '\t' +
+                    newFileInfo.fileTime(QFileDevice::FileModificationTime).toString("yyyy-MM-dd HH:mm:ss.zzz000000 ") +
+                    intToUtcOffset(t).c_str()
+                    << endl;
+                DiffGenerator::MagicInvoker i(_oldFile.toStdString(), _newFile.toStdString());
+                i.save(stream);
+            }
+        }
+    break;
+
+    default:
+        break;
     }
 }
 
@@ -257,7 +274,7 @@ void MainWindow::onGenerateDiff()
 {
     DialogDiffGen genDialog(this);
 #ifdef _DEBUG
-    generateDiffFile("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test2.cpp", "D:/git/VersionControll/diff/testp-u.diff", false);
+    generateDiffFile("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/test2.cpp", "D:/git/VersionControll/diff/testp-u.diff", DialogDiffGen::generatorType::user);
 #else
     if (genDialog.exec())
     {

@@ -98,6 +98,9 @@
     <QtUic Include="dialog_settings_color.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="dialog_settings_command.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">

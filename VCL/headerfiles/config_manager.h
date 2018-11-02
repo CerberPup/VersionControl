@@ -11,6 +11,7 @@ class ConfigKeys
 {
 public:
     static const QString FontKey;
+    static const QString GeneratorKey;
     enum Colors
     {
         DiffWindow_addedTextForeground = 0,
@@ -81,6 +82,8 @@ public:
 
     QFont getQFont(const QString key);
     void setQFont(const QString key, const QFont font);
+    QString getQString(const QString key);
+    void setQString(const QString key, const QString str);
 ;};
 
 #endif // CONFIG_MANAGER_H

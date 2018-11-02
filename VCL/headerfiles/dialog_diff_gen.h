@@ -23,10 +23,16 @@ private slots:
     void onSelectDiff();
 
 public:
+    enum generatorType {
+        program = 0,
+        system,
+        user
+    };
+
     DialogDiffGen(QWidget *parent);
     ~DialogDiffGen();
-    //true - system, false - program
-    bool getGenerationType();
+
+    generatorType getGenerationType();
     QString getOld();
     QString getNew();
     QString getPatch();

@@ -11,7 +11,7 @@ SettingsModel::~SettingsModel()
 {
 }
 
-void SettingsModel::addTreeItem(QString key)
+void SettingsModel::addTreeItem(QString key, keyType type)
 {
     QStringList sub = key.split('/');
     QString parrent = sub.takeFirst();
@@ -42,7 +42,7 @@ void SettingsModel::addTreeItem(QString key)
     QStringList keys = rootItem->data(Qt::UserRole).toStringList();
     keys.append(key);
     rootItem->setData(keys, Qt::UserRole);
-    //static_cast<SettingsModelItem*>(rootItem)->addKey(key);
+    rootItem->setData(type, Qt::UserRole+1);
 }
 
 void SettingsModel::initialize() 
@@ -50,8 +50,9 @@ void SettingsModel::initialize()
     for (int i = 0; i < static_cast<int>(ConfigKeys::Colors::COUNT); i++)
     {
         QString key = ConfigKeys::getColorKey(static_cast<ConfigKeys::Colors>(i));
-        addTreeItem(key);
+        addTreeItem(key, keyType::Color);
     }
-    addTreeItem(ConfigKeys::FontKey);
+    addTreeItem(ConfigKeys::FontKey, keyType::Font);
+    addTreeItem(ConfigKeys::GeneratorKey, keyType::DiffGenerator);
 
 }

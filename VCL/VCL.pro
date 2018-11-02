@@ -59,4 +59,5 @@ FORMS += \
         dialog_diffApply.ui \
         dialog_diffGen.ui \
         dialog_settings.ui \
-        dialog_settings_color.ui
+        dialog_settings_color.ui \
+		dialog_settings_command.ui

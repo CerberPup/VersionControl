@@ -3,3 +3,4 @@ VCL
 moc_*.*
 Makefile
 ui_*.*
+GeneratedFiles

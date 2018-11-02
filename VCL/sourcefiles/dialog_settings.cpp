@@ -2,9 +2,10 @@
 
 #include "headerfiles/config_manager.h"
 
-#include <QtWidgets/qpushbutton.h>
-#include <QtWidgets/qcolordialog.h>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QColorDialog>
 #include <QtWidgets/QFontDialog>
+#include <QtWidgets/QFileDialog>
 
 namespace {
     void clearLayout(QLayout *layout)
@@ -19,6 +20,45 @@ namespace {
             delete child;
         }
     }
+}
+//////////////////////////////////////////
+CommandPickingWidget::CommandPickingWidget(QString label, QString key, QWidget* parrent) :QWidget(parrent), m_key(key)
+{
+    ui = new Ui::DialogSettingsCommand;
+    ui->setupUi(this);
+    
+    connect(ui->m_exeSelect, SIGNAL(clicked()), this, SLOT(onSelectExe()));
+    connect(ui->m_applyButton, SIGNAL(clicked()), this, SLOT(onApply()));
+
+    ui->m_cmdExplain->setText("Example: -u <span style=\"color:#aa0000;\">$0 $1</span> > <span style=\"color:#aa0000;\">$2</span><br>\
+        <span style=\"color:#aa0000;\">$1 </span>- Full first input file directory<br>\
+        <span style=\"color:#aa0000;\">$2 </span>- Full second input file directory<br>\
+        <span style=\"color:#aa0000;\">$3 </span>- Full output file directory<br>\
+        <span style=\"color:#aa0000;\">$F </span>- First input file name directory<br>\
+        <span style=\"color:#aa0000;\">$S </span>- Second input file name directory<br>\
+        <span style=\"color:#aa0000;\">$O </span>- Output file name directory\
+        ");
+
+    ui->m_exeLineEdit->setText(ConfigManager::getInstance().getQString(ConfigKeys::GeneratorKey + "/Executable"));
+    ui->m_cmdCommand->setPlainText(ConfigManager::getInstance().getQString(ConfigKeys::GeneratorKey + "/Attributes"));
+
+    this->show();
+}
+
+CommandPickingWidget::~CommandPickingWidget()
+{
+    delete ui;
+}
+
+void CommandPickingWidget::onSelectExe()
+{
+    QString dir = QFileDialog::getOpenFileName(this, "Select executable file", ui->m_exeLineEdit->text(), "");
+    ui->m_exeLineEdit->setText(dir);
+}
+void CommandPickingWidget::onApply()
+{
+    ConfigManager::getInstance().setQString(ConfigKeys::GeneratorKey + "/Executable", ui->m_exeLineEdit->text());
+    ConfigManager::getInstance().setQString(ConfigKeys::GeneratorKey + "/Attributes", ui->m_cmdCommand->toPlainText());
 }
 //////////////////////////////////////////
 FontPickingWidget::FontPickingWidget(QString label, QString key, QWidget* parrent) :QWidget(parrent), m_key(key)
@@ -89,16 +129,27 @@ void ColorPickingWidget::onColorChoose()
 
 }
 //////////////////////////////////////////////////
-void DialogSettings::createColorRow(QString label, QString key)
+void DialogSettings::createRow(QString label, QString key, SettingsModel::keyType type)
 {
-    wdg->verticalLayout->addWidget(new ColorPickingWidget(label, key, this));
-}
-
-void DialogSettings::createFontRow(QString label, QString key)
-{
-    FontPickingWidget* fontWidget = new FontPickingWidget(label, key, this);
-    connect(fontWidget, SIGNAL(fontChanged()), this, SIGNAL(fontChanged()));
-    wdg->verticalLayout->addWidget(fontWidget);
+    switch (type)
+    {
+    case SettingsModel::keyType::Color:
+        wdg->verticalLayout->addWidget(new ColorPickingWidget(label, key, this));
+        break;
+    case SettingsModel::keyType::Font:
+    {
+        FontPickingWidget * fontWidget = new FontPickingWidget("Font", key, this);
+        connect(fontWidget, SIGNAL(fontChanged()), this, SIGNAL(fontChanged()));
+        wdg->verticalLayout->addWidget(fontWidget);
+    }
+        break;
+    case SettingsModel::keyType::DiffGenerator:
+        wdg->verticalLayout->addWidget(new CommandPickingWidget(label, key, this));
+        break;
+    default:
+        break;
+    }
+    
 }
 
 DialogSettings::DialogSettings(QWidget *parent)
@@ -109,8 +160,8 @@ DialogSettings::DialogSettings(QWidget *parent)
     setWindowTitle("Settings");
     wdg = new Ui::DialogSettingsColor;
     wdg->setupUi(widget);
-    widget->hide();
-    wdg->Title->setObjectName("Title");
+    //widget->hide();
+    //wdg->Title->setObjectName("Title");
     treeView->setModel(&m_model);
 
     connect(treeView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onSelectedItem(const QModelIndex &)));
@@ -127,25 +178,20 @@ void DialogSettings::onSelectedItem(const QModelIndex &index)
     {
         clearLayout(wdg->verticalLayout);
         QStringList keys = m_model.data(index, Qt::UserRole).toStringList();
+        SettingsModel::keyType Type = m_model.data(index, Qt::UserRole+1).value<SettingsModel::keyType>();
         QString title = item->text();
         wdg->verticalLayout->addWidget(new QLabel(title,this));
         for(QString var : keys)
         {
-            if (var.split('/').last() == "Font")
-            {
-                createFontRow("Font", var);
-            }
-            else
-            {
-                createColorRow(var.split('/').last(), var);
-            }
+            createRow(var.split('/').last(), var, Type);
         }
-        widget->show();
-
+        //widget->show();
+        wdg->verticalLayout->addSpacerItem(new QSpacerItem(10,10,QSizePolicy::Minimum,QSizePolicy::Expanding));
+        widget->setLayout(wdg->verticalLayout);
 
     }
     else
     {
-        widget->hide();
+        //widget->hide();
     }
 }

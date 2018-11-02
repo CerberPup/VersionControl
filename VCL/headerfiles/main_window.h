@@ -6,6 +6,7 @@
 #include <QFontMetrics>
 
 #include "custom_delegate.h"
+#include "dialog_diff_gen.h"
 #include "diff_model.h"
 #include "modified_file_system_model.h"
 #include "GeneratedFiles/ui_mainwindow.h"
@@ -40,7 +41,7 @@ public:
     DiffModel * m_diffModel;
 private:
     void onDiffModelDataChange();
-    void generateDiffFile(const QString& _oldFile, const QString& _newFile, const QString& _diffFile, const bool& _systemGenerator);
+    void generateDiffFile(const QString& _oldFile, const QString& _newFile, const QString& _diffFile, const DialogDiffGen::generatorType& _systemGenerator);
 
 	QMenu * m_directoryContextMenu;
 	QMenu * m_diffContextMenu;

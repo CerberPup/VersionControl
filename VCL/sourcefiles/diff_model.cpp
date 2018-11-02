@@ -299,74 +299,10 @@ namespace
             std::move(m_localOldRowData.begin(),m_localOldRowData.end(),std::back_inserter(_oldContainer));
             std::move(m_localNewRowData.begin(),m_localNewRowData.end(),std::back_inserter(_newContainer));
             return true;
-            /*
-            updateLocations(_rawData);
-            if (possibleLocations.size()==1)
-            {
-                for (std::list<QString>::iterator unchanged = _rawData.begin(); unchanged != possibleLocations[0].first; unchanged++)
-                {
-                    _oldContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *unchanged)));
-                    _newContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *unchanged)));
-                }
-                _rawData.erase(_rawData.begin(),std::next(possibleLocations[0].second,1));
-
-                DT::diffRowData buforOld;
-                DT::diffRowData buforNew;
-                for (auto row: data)
-                {
-                    switch (row.second)
-                    {
-                    case DT::lineStatus::Added:
-                        buforNew.data.push_back((std::make_pair(DT::lineStatus::Added, row.first)));
-                        break;
-                    case DT::lineStatus::Removed:
-                        buforOld.data.push_back((std::make_pair(DT::lineStatus::Removed, row.first)));
-                        break;
-                    case DT::lineStatus::Unchanged:
-                        dumpBuffors(buforOld, buforNew, _oldContainer, _newContainer);
-                        _newContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, row.first)));
-                        _oldContainer.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, row.first)));
-                        break;
-                    default:
-                        break;
-                    }
-                }
-                dumpBuffors(buforOld, buforNew, _oldContainer, _newContainer);
-                return true;
-            }
-            else
-            {
-
-                return false;
-            }*/
         }
     };
 
 }
-
-/*void DiffModel::dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added)
-{
-    if (_removed.size() != 0 || _added.size() != 0)
-    {
-        if (_removed.size() != 0 && _added.size() != 0)
-        {
-            m_oldFileData.push_back(_removed);
-            m_newFileData.push_back(_added);
-        }
-        else if (_removed.size() != 0)
-        {
-            m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
-            m_oldFileData.push_back(_removed);
-        }
-        else if (_added.size() != 0)
-        {
-            m_newFileData.push_back(_added);
-            m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Changed, "")));
-        }
-        _removed.clear();
-        _added.clear();
-    }
-}*/
 
 DiffModel::DiffModel(QObject *parent, CustomDelegate *_delegate)
 	: QAbstractListModel(parent)

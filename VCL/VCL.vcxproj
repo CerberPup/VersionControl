@@ -228,6 +228,7 @@
     <QtUic Include="dialog_diffGen.ui" />
     <QtUic Include="dialog_settings.ui" />
     <QtUic Include="dialog_settings_color.ui" />
+    <QtUic Include="dialog_settings_command.ui" />
     <QtUic Include="mainwindow.ui">
     </QtUic>
   </ItemGroup>

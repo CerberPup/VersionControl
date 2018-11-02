@@ -38,6 +38,7 @@ std::map<ConfigKeys::Colors, QColor> ConfigKeys::colorsDefaults = {
 };
 
 const QString ConfigKeys::FontKey = "Application/Font";
+const QString ConfigKeys::GeneratorKey = "Application/Diff Generator";
 
 ConfigManager::ConfigManager()
 {
@@ -99,4 +100,14 @@ QFont ConfigManager::getQFont(const QString key)
 void ConfigManager::setQFont(const QString key, const QFont font)
 {
     settings->setValue(key, font);
+}
+
+QString ConfigManager::getQString(const QString key)
+{
+    return settings->value(key, "").toString();
+}
+
+void ConfigManager::setQString(const QString key, const QString str)
+{
+    settings->setValue(key, str);
 }

@@ -144,7 +144,7 @@
        </property>
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
-         <widget class="QRadioButton" name="radioButton">
+         <widget class="QRadioButton" name="radioButtonSystem">
           <property name="text">
            <string>System</string>
           </property>
@@ -154,9 +154,16 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QRadioButton" name="radioButtonProgram">
           <property name="text">
            <string>Program</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="radioButtonUser">
+          <property name="text">
+           <string>User defined</string>
           </property>
          </widget>
         </item>
@@ -174,7 +181,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string> </string>
+          <string/>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
