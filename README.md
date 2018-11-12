@@ -2,8 +2,8 @@
 ## Todo:
 - [x] Gui using QT library
 - [x] Ability to use system specific diff
-- [ ] Own implementation of diff
-- [ ] Specific linux tests
+- [x] Own implementation of diff
+- [x] Specific linux tests
 
 ## Gui implementation:
 
