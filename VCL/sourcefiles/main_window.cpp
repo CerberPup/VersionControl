@@ -47,9 +47,106 @@ namespace {
         }
         return returnValue;
     }
+
+    DialogDiffGen::generatorType str2generatorType(std::string toParse) 
+    {
+        for (auto & c : toParse) c = toupper(c);
+
+        if (toParse == "PROGRAM")
+        {
+            return DialogDiffGen::generatorType::program;
+        }if (toParse == "SYSTEM")
+        {
+            return DialogDiffGen::generatorType::system;
+        }if (toParse == "USER")
+        {
+            return DialogDiffGen::generatorType::user;
+        }
+        return DialogDiffGen::generatorType::invalid;
+    }
+}
+#define EnsureHasNext if (i >= argc-1 || argv[i + 1][0] == '-') { throw std::invalid_argument(argument + " is missing argument"); }
+
+void MainWindow::parseArguments(int argc, char *argv[])
+{
+    bool apply = false;
+    std::string dump;
+    bool noGui = false;
+    std::string input;
+    std::string second;
+    std::string output;
+    DialogDiffGen::generatorType generator = DialogDiffGen::generatorType::invalid;
+    QMessageBox().exec();
+    for (int i = 0; i < argc; i++)
+    {
+        std::string argument(argv[i]);
+        for (auto & c : argument) c = toupper(c);
+        
+        if (argument == "-INPUT")
+        {
+            EnsureHasNext;
+            input = argv[++i];
+            continue;
+        }
+        if (argument == "-SECOND")
+        {
+            EnsureHasNext;
+            second = argv[++i];
+            continue;
+        }
+        if (argument == "-OUTPUT")
+        {
+            EnsureHasNext;
+            output = argv[++i];
+            continue;
+        }
+        if (argument == "-GENERATE")
+        {
+            EnsureHasNext;
+            generator = str2generatorType(argv[++i]);
+            if (generator == DialogDiffGen::generatorType::invalid)
+                throw std::invalid_argument(argument);
+            continue;
+        }
+        if (argument == "-DUMP")
+        {
+            EnsureHasNext;
+            dump = argv[++i];
+            continue;
+        }
+        if (argument == "-APPLY")
+        {
+            apply = true;
+            continue;
+        }
+        if (argument == "-NOGUI")
+        {
+            noGui = true;
+            continue;
+        }
+    }
+
+    if (generator != DialogDiffGen::generatorType::invalid)
+    {
+        generateDiffFile(input.c_str(), second.c_str(), output.c_str(), generator);
+    }
+    if (apply && !noGui)
+    {
+        m_diffModel->loadFileAndDiff(input, generator == DialogDiffGen::generatorType::invalid? second : output);
+        onDiffModelDataChange();
+    }
+    if (dump.size()!=0)
+    {
+        if (!(apply && !noGui))//Not applied
+        {
+            m_diffModel->loadFileAndDiff(input, generator == DialogDiffGen::generatorType::invalid ? second : output);
+            onDiffModelDataChange();
+        }
+        SaveGeneratedFile(dump.c_str());
+    }
 }
 
-MainWindow::MainWindow(int argc, char *argv[],QWidget *parent)
+MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
     , ui(new Ui::MainWindow)
 	, m_directoryModel(new ModifiedFileSystemModel(this))
@@ -310,8 +407,13 @@ void MainWindow::onApplyDiff()
 
 void MainWindow::onSaveGeneratedFile()
 {
-    QString Ouptutfile = QFileDialog::getSaveFileName(this, "Save generated file", m_diffModel->getSourceFileName(), "All files (*.*)");
-    QFile file(Ouptutfile);
+    QString OutputFile = QFileDialog::getSaveFileName(this, "Save generated file", m_diffModel->getSourceFileName(), "All files (*.*)");
+    SaveGeneratedFile(OutputFile);
+}
+
+void MainWindow::SaveGeneratedFile(QString _file)
+{
+    QFile file(_file);
     if (file.open(QIODevice::ReadWrite)) {
         QTextStream stream(&file);
         std::list<QString> outputData = m_diffModel->getOutputFileData();
@@ -320,7 +422,7 @@ void MainWindow::onSaveGeneratedFile()
         {
             stream << *it << endl;
         }
-        if (lastElement != outputData.begin())
+        //if (lastElement != outputData.begin())
             stream << *lastElement;
     }
 }

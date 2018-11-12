@@ -26,7 +26,8 @@ public:
     enum generatorType {
         program = 0,
         system,
-        user
+        user,
+        invalid
     };
 
     DialogDiffGen(QWidget *parent);

@@ -109,9 +109,15 @@ namespace
                         if (dataIt->first == *from)
                         {
                             dataIt = std::next(dataIt, 1);
+                            while (dataIt != data.end() && dataIt->second == DT::Added)
+                            {
+                                dataIt = std::next(dataIt, 1);
+                            }
                             if (dataIt == data.end())
                             {
                                 possibleLocations.push_back(location(beginning, from, conflicted));
+                                if (beginning == from)
+                                    from = std::next(from, 1);
                                 beginning = from;
                                 break;
                             }

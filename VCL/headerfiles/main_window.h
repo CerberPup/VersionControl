@@ -20,7 +20,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(int argc, char *argv[],QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
+    void parseArguments(int argc, char *argv[]);
     ~MainWindow();
 	void resizeEvent(QResizeEvent* event);
 
@@ -39,9 +40,12 @@ public slots:
 
 public:
     DiffModel * m_diffModel;
+
 private:
+    void SaveGeneratedFile(QString _file);
     void onDiffModelDataChange();
     void generateDiffFile(const QString& _oldFile, const QString& _newFile, const QString& _diffFile, const DialogDiffGen::generatorType& _systemGenerator);
+    
 
 	QMenu * m_directoryContextMenu;
 	QMenu * m_diffContextMenu;

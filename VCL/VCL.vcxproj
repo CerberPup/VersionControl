@@ -199,7 +199,16 @@
     </ClCompile>
     <ClCompile Include="sourcefiles\diff_generator.cpp" />
     <ClCompile Include="sourcefiles\diff_model.cpp" />
-    <ClCompile Include="sourcefiles\main.cpp" />
+    <ClCompile Include="sourcefiles\main.cpp">
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\%(Filename).moc</OutputFile>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\debug;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc;$(QTDIR)\include\QtTest</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_TESTLIB_LIB</Define>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\%(Filename).moc</OutputFile>
+      <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;.\..\..\..\QT\5.11.1\MSVC2015_64\include;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtWidgets;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtGui;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtANGLE;.\..\..\..\QT\5.11.1\MSVC2015_64\include\QtCore;.\release;\include;.\..\..\..\QT\5.11.1\MSVC2015_64\mkspecs\win32-msvc;$(QTDIR)\include\QtTest</IncludePath>
+      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;_UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG;QT_TESTLIB_LIB</Define>
+    </ClCompile>
     <ClCompile Include="sourcefiles\main_window.cpp" />
     <ClCompile Include="sourcefiles\modified_file_system_model.cpp" />
     <ClCompile Include="sourcefiles\settings_model.cpp" />
