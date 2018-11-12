@@ -1,0 +1,9 @@
+*.o
+VCL*.*
+Test.vcxproj
+moc_*.*
+Makefile
+ui_*.*
+GeneratedFiles
+*.ini
+TestCases/Generated/*
