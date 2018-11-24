@@ -6,7 +6,6 @@
 #include "headerfiles/dialog_diff_apply.h"
 #include "headerfiles/dialog_settings.h"
 
-
 #include "ui_mainwindow.h"
 
 #include <queue>
@@ -18,6 +17,8 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QTextStream>
+
+#undef _DEBUG
 
 namespace {
     std::string intToUtcOffset(int &hours)
@@ -76,7 +77,6 @@ void MainWindow::parseArguments(int argc, char *argv[])
     std::string second;
     std::string output;
     DialogDiffGen::generatorType generator = DialogDiffGen::generatorType::invalid;
-    QMessageBox().exec();
     for (int i = 0; i < argc; i++)
     {
         std::string argument(argv[i]);
@@ -344,15 +344,19 @@ void MainWindow::onCustomContextMenuDiff(const QPoint &point)
 	if (index.isValid()) {
         QMenu menu;
         DT::diffRowData data = index.data().value<DT::diffRowData>();
+        menu.addAction("Preffer left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::left); });
+        menu.addAction("Preffer right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::right); });
+        menu.addAction("Preffer left OVER right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::leftOnRight); });
+        menu.addAction("Preffer right OVER left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::RightOnLeft); });
+        menu.addSeparator();
+        menu.addAction("Settings", this, SLOT(onSettingsRequest()));
         if (index.column()==1)//old view
         {
-            menu.addAction("Preffer left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::left); });
-            menu.addAction("Preffer right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::right); });
+           
             menu.exec(ui->OldListView->mapToGlobal(point));
         }
         else//new view
         {
-            menu.addAction("Settings", this, SLOT(onSettingsRequest()));
             menu.exec(ui->NewListView->mapToGlobal(point));
         }
 

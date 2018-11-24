@@ -100,7 +100,8 @@ namespace
                 if (beginning != _rawData.end())
                 {
                     std::list<std::pair<QString, DT::lineStatus>>::iterator dataIt = data.begin();
-                    for (std::list<QString>::iterator from = beginning; from != _rawData.end(); from++)
+                    std::list<QString>::iterator from = beginning;
+                    for (;from != _rawData.end(); from++)
                     {
                         while (dataIt != data.end() && dataIt->second == DT::Added)
                         {
@@ -136,6 +137,10 @@ namespace
                                 break;
                             }
                         }
+                    }
+                    if (from == _rawData.end())
+                    {
+                        canWork = false;
                     }
 
                 }
@@ -667,12 +672,12 @@ void DiffModel::setVersion(QModelIndex _index, version _how)
     case DiffModel::leftOnRight:
         std::next(m_oldFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
         std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
-
+        *std::next(m_newFileData.begin(), _index.row()) = (*std::next(m_oldFileData.begin(), _index.row()) += *std::next(m_newFileData.begin(), _index.row()));
         break;
     case DiffModel::RightOnLeft:
         std::next(m_oldFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
         std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
-
+        *std::next(m_newFileData.begin(), _index.row()) = (*std::next(m_newFileData.begin(), _index.row()) += *std::next(m_oldFileData.begin(), _index.row()));
         break;
     default:
         break;

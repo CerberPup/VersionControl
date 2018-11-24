@@ -35,6 +35,12 @@ namespace DT
             }
         }
 		size_t size() { return data.size(); }
+        
+        diffRowData& operator+=(const diffRowData& right)
+        {
+            data.insert(data.end(), right.data.cbegin(), right.data.cend());
+            return *this;
+        }
 		std::pair<lineStatus, QString>& operator[](int i) { return *std::next(data.begin(),i); }
 		QString wholeText() const
 		{

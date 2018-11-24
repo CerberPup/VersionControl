@@ -32,7 +32,7 @@
      <item>
       <widget class="QPushButton" name="m_exeSelect">
        <property name="text">
-        <string>PushButton</string>
+        <string>Select</string>
        </property>
       </widget>
      </item>
