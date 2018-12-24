@@ -21,8 +21,8 @@ namespace DT
         Conflicted
 	};
 
-	struct diffRowData {
-
+	struct diffRowData 
+    {
 		std::list<std::pair<lineStatus, QString>> data;
 		diffRowData() {}
 		diffRowData(std::pair<lineStatus, QString> line) :data(std::list<std::pair<lineStatus, QString>>({ line })) {}
@@ -45,7 +45,7 @@ namespace DT
 		QString wholeText() const
 		{
 			QString returnVal;
-                        for (size_t i = 0; i < data.size(); i++)
+            for (size_t i = 0; i < data.size(); i++)
 			{
 				returnVal += (*std::next(data.begin(),i)).second;
 			}

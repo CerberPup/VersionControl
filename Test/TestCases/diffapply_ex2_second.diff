@@ -1,0 +1,48 @@
+--- stest.cpp	2018-10-12 14:26:46.939000000 +0200
++++ stest2.cpp	2018-10-12 13:20:54.982000000 +0200
+@@ -1,35 +1,27 @@
+ a
+ b
+ c
+-s
+ d
+ e
++99
++98
++97
+ 0
+ 1
+-2
+-3
+-4
+ 5
++4
+ //
+ //
+ //
+-invisible]
+-asd
+-asdasd
+-czx
+-
++invisible
+ //
+ //
+ //
+ 1
++2
+ 3
+ 4
+-
+-
+-5
+-6
++7
+ -
+ a
+-b
+-a
+-x
+\ No newline at end of file
++b
+\ No newline at end of file

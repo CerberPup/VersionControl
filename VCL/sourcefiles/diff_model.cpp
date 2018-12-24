@@ -4,6 +4,7 @@
 #include <fstream>
 #include <QApplication>
 #include <regex>
+#include <QMessageBox>
 
 namespace
 {
@@ -92,6 +93,7 @@ namespace
         {
             bool canWork = true;
             std::list<QString>::iterator beginning = _rawData.begin();
+            std::vector<std::list<QString>::iterator> context;
             possibleLocations.clear();
             while (canWork)
             {
@@ -105,10 +107,12 @@ namespace
                     {
                         while (dataIt != data.end() && dataIt->second == DT::Added)
                         {
+                            context.push_back(from);
                             dataIt = std::next(dataIt, 1);
                         }
                         if (dataIt->first == *from)
                         {
+                            context.push_back(from);
                             dataIt = std::next(dataIt, 1);
                             while (dataIt != data.end() && dataIt->second == DT::Added)
                             {
@@ -116,7 +120,15 @@ namespace
                             }
                             if (dataIt == data.end())
                             {
-                                possibleLocations.push_back(location(beginning, from, conflicted));
+                                //fix context
+                                for (auto i = context.size()-1; i >0; i--)
+                                {
+                                    if (i!=0)
+                                    {
+                                        context[i - 1] = std::prev(context[i]);
+                                    }
+                                }
+                                possibleLocations.push_back(location(context[0], from, conflicted));
                                 if (beginning == from)
                                     from = std::next(from, 1);
                                 beginning = from;
@@ -128,6 +140,10 @@ namespace
                             auto tmp = std::find_if(from, _rawData.end(), [dataIt](QString row)->bool {return dataIt->first == row; });
                             if (tmp != _rawData.end())
                             {
+                                //wtf
+                                //beginning = from;
+                                //break;
+                                //makes no sense
                                 conflicted = true;
                                 from = std::prev( tmp,1);
                             }
@@ -580,25 +596,35 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
     }
     reader.close();
     //Reslove conflicts
-    for(SinglePatch patch: patches)
+    bool tryAgain = true;
+    while (tryAgain)
     {
-        if (patch.getNumberOfPossibleLocations()==1)
+        tryAgain = false;
+        for (size_t i = 0; i < patches.size(); i++)
         {
-            auto loc = patch.getPossibleLocations();
-            for (auto it = rawData.begin(); it != loc[0].begin; it++)
+            if (patches[i].getNumberOfPossibleLocations() == 1)
             {
-                m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *it)));
-                m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *it)));
-            }
-            rawData.erase(rawData.begin(), loc[0].begin);
-            patch.applyLocal(rawData);
-            patch.apply(m_oldFileData, m_newFileData);
-        }
-        else
-        {
+                std::vector<location> loc = patches[i].getPossibleLocations();
+                for (std::list<QString>::iterator it = rawData.begin(); it != loc[0].begin; it++)
+                {
+                    m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *it)));
+                    m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *it)));
+                }
+                rawData.erase(rawData.begin(), loc[0].begin);
 
+                patches[i].applyLocal(rawData);
+                patches[i].apply(m_oldFileData, m_newFileData);
+                patches.erase(patches.begin() + i);
+                tryAgain = true;
+                i--;
+            }
         }
     }
+    if (patches.size()>0)
+    {
+        QMessageBox(QMessageBox::Icon::Critical, "Fail", "Failed hunks: " + patches.size()).show();
+    }
+    
 
     //Save leftovers
     while (rawData.size()!=0)
@@ -613,8 +639,6 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 
 QVariant DiffModel::data(const QModelIndex & index, int role) const
 {
-	//QString a(std::next(changeData.begin(), index.row())->wholeText());
-	
 	switch (role)
 	{
 	case Qt::DisplayRole:

@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
         std::string message(createHelpString());
         MessageBoxW(NULL, std::wstring(message.begin(), message.end()).c_str(), L"Help", NULL);
 #else
-        qWarning() << createHelpString();
+        qWarning(createHelpString());
 #endif
         return EXIT_SUCCESS;
     }
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
         std::string message(createHelpString() + "\nError: " + std::string( t.what()));
         MessageBoxW(NULL, std::wstring(message.begin(), message.end()).c_str() , L"Error", NULL);
 #else
-        qWarning() << createHelpString() << "\nError: " << t.what();
+        qWarning(createHelpString() + "\nError: " + t.what());
 #endif
         return EXIT_FAILURE;
     }

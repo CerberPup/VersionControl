@@ -1,0 +1,26 @@
+--- diff_generator.cpp	2018-10-20 13:13:49.905000000 +0200
++++ diff_generator2.cpp	2018-12-22 20:38:43.241000000 +0100
+@@ -15,7 +15,6 @@
+     ContextContainer::ContextContainer() :begin(3)
+     {
+         forgottenData = false;
+-        missed = 0;
+         beginning = 1;
+     }
+ 
+@@ -32,12 +31,13 @@
+ 
+     int ContextContainer::getBeginning() const
+     {
+-        return beginning;
++        return beginningThingy;
+     }
+ 
+     void ContextContainer::setBeginning(const int _beggining)
+     {
+         beginning = _beggining;
++		added
+     }
+ 
+     int ContextContainer::getBefore() const
+\ No newline at end of file
