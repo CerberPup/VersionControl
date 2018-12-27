@@ -93,8 +93,17 @@ namespace
         {
             bool canWork = true;
             std::list<QString>::iterator beginning = _rawData.begin();
-            std::vector<std::list<QString>::iterator> context;
+            //std::vector<std::list<QString>::iterator> context;
             possibleLocations.clear();
+            int linesOfContext = 0;
+            for (auto patchLine : getData())
+            {
+                if (patchLine.second != DT::Unchanged)
+                {
+                    break;
+                }
+                linesOfContext++;
+            }
             while (canWork)
             {
                 bool conflicted = false;
@@ -107,12 +116,12 @@ namespace
                     {
                         while (dataIt != data.end() && dataIt->second == DT::Added)
                         {
-                            context.push_back(from);
+                            //context.push_back(from);
                             dataIt = std::next(dataIt, 1);
                         }
                         if (dataIt->first == *from)
                         {
-                            context.push_back(from);
+                            //context.push_back(from);
                             dataIt = std::next(dataIt, 1);
                             while (dataIt != data.end() && dataIt->second == DT::Added)
                             {
@@ -121,14 +130,14 @@ namespace
                             if (dataIt == data.end())
                             {
                                 //fix context
-                                for (auto i = context.size()-1; i >0; i--)
+                                /*for (auto i = context.size()-1; i >0; i--)
                                 {
                                     if (i!=0)
                                     {
                                         context[i - 1] = std::prev(context[i]);
                                     }
-                                }
-                                possibleLocations.push_back(location(context[0], from, conflicted));
+                                }*/
+                                possibleLocations.push_back(location(beginning, from, conflicted));
                                 if (beginning == from)
                                     from = std::next(from, 1);
                                 beginning = from;
@@ -138,12 +147,8 @@ namespace
                         else
                         {
                             auto tmp = std::find_if(from, _rawData.end(), [dataIt](QString row)->bool {return dataIt->first == row; });
-                            if (tmp != _rawData.end())
+                            if (tmp != _rawData.end() && std::distance(beginning,from)>= linesOfContext)
                             {
-                                //wtf
-                                //beginning = from;
-                                //break;
-                                //makes no sense
                                 conflicted = true;
                                 from = std::prev( tmp,1);
                             }
@@ -382,133 +387,6 @@ int DiffModel::columnCount(const QModelIndex&) const
 {
 	return 2;
 }
-/*
-bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
-{
-    beginResetModel();
-	std::list<QString>rawData;
-	m_oldFileData.clear();
-	m_newFileData.clear();
-	std::ifstream reader;
-	std::string bufor;
-	reader.open(File);
-	if (reader.good())
-	{
-		while (!reader.eof())
-		{
-			std::getline(reader, bufor);
-			bufor.insert(bufor.end(), '\n');
-			QString tmp = replaceTabs(QString(bufor.c_str()));
-			rawData.push_back(tmp);
-		}
-	}
-	reader.close();
-	reader.open(DiffFile);
-	if (reader.good())
-	{
-		int oldStartPrev = 0;
-		int oldNumberPrev = 0;
-		int oldStart = 0;
-		int oldNumber = 0;
-		int newStart = 0;
-		int newNumber = 0;
-		int linesAdded = 0;
-		bool afterSection = false;
-
-        std::getline(reader, bufor);
-
-        std::regex pattern("^--- (.*)\\t");
-        std::smatch pieces_match;
-        std::regex_search(bufor, pieces_match, pattern);
-        m_sourceFileName = QString(pieces_match[1].str().c_str());
-		while (!reader.eof())
-		{
-			if (!afterSection)
-				std::getline(reader, bufor);
-			if (bufor[0] == '@' && bufor[1] == '@') 
-            {
-				std::regex pattern("\\d+");
-				std::sregex_iterator next(bufor.begin(), bufor.end(), pattern);
-				oldStartPrev = oldStart;
-				oldNumberPrev = oldNumber;
-				oldStart = atoi((*next).str().c_str());
-				oldNumber = atoi((*++next).str().c_str());
-				newStart = atoi((*++next).str().c_str());
-				newNumber = atoi((*++next).str().c_str());
-                int i = oldStartPrev + oldNumberPrev;
-                i = i < 1 ? 0 : i-1;
-				for (; i < oldStart-1; i++)
-				{
-                    if (i>=rawData.size())
-                    {
-                        return false;
-                    }
-					m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *std::next(rawData.begin(),i))));
-					m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *std::next(rawData.begin(),i))));
-				}
-				bool nextSection = false;
-				DT::diffRowData oldRow;
-				DT::diffRowData newRow;
-				while (!reader.eof() && !nextSection)
-				{
-
-					std::getline(reader, bufor);
-					bufor.insert(bufor.end(), '\n');
-					switch (bufor[0])
-					{
-					case ' ':
-					{
-						bufor.erase(bufor.begin());
-						QString qstring = replaceTabs(QString(bufor.c_str()));
-                        dumpBuffors(oldRow,newRow);
-						m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, qstring)));
-						m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, qstring)));
-						break;
-					}
-					case '-':
-					{
-						bufor.erase(bufor.begin());
-						QString qstring = replaceTabs(QString(bufor.c_str()));
-						oldRow.data.push_back((std::make_pair(DT::lineStatus::Removed, qstring)));
-						break;
-					}
-					
-					case '+':
-					{
-						bufor.erase(bufor.begin());
-						QString qstring = replaceTabs(QString(bufor.c_str()));
-						newRow.data.push_back((std::make_pair(DT::lineStatus::Added, qstring)));
-						break;
-					}
-                    case '\\':
-                    {
-                        linesAdded--;
-                        break;
-                    }
-					default:
-                        dumpBuffors(oldRow, newRow);
-						nextSection = true;
-						break;
-					}
-					linesAdded++;
-				}
-				afterSection = true;
-				continue;
-			}
-			afterSection = false;
-		}
-        int i = oldStart + oldNumber;
-        i = i < 1 ? 0 : i - 1;
-        for (; i < static_cast<int>(rawData.size()); i++)
-        {
-            m_newFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *std::next(rawData.begin(), i))));
-            m_oldFileData.push_back(DT::diffRowData(std::make_pair(DT::lineStatus::Unchanged, *std::next(rawData.begin(), i))));
-        }
-	}
-	reader.close();
-    endResetModel();
-	return true;
-}*/
 
 bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
 {
