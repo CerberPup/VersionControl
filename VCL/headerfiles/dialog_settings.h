@@ -8,6 +8,7 @@
 
 #include <QDialog>
 #include <QLineEdit>
+#include <QCheckBox>
 
 //////////////////////////Containers/////////////////////////////////
 class CommandPickingWidget :public QWidget, public Ui::DialogSettingsCommand
@@ -25,6 +26,22 @@ private slots:
 public:
     CommandPickingWidget(QString label, QString key, QWidget* parrent);
     ~CommandPickingWidget();
+
+};
+
+class BoolWidget :public QWidget
+{
+    Q_OBJECT
+
+private:
+    QString m_key;
+    QLabel* m_Label;
+
+public:
+    BoolWidget(QString label, QString key, QWidget* parrent);
+
+public slots:
+    void StateChanged(int state);
 
 };
 

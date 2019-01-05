@@ -15,7 +15,8 @@ public:
     {
         Color = 0,
         Font,
-        DiffGenerator
+        DiffGenerator,
+        Bool
     };
 
 private:

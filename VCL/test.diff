@@ -1,0 +1,58 @@
+--- diffgen_ex3_base.txt	2018-10-20 13:13:49.905000000 +0200
++++ diffgen_ex3_second.txt	2018-12-22 21:30:52.777000000 +0100
+@@ -15,7 +15,6 @@
+     ContextContainer::ContextContainer() :begin(3)
+     {
+         forgottenData = false;
+-        missed = 0;
+         beginning = 1;
+     }
+ 
+@@ -32,12 +31,13 @@
+ 
+     int ContextContainer::getBeginning() const
+     {
+-        return beginning;
++        return beginningThingy;
+     }
+ 
+     void ContextContainer::setBeginning(const int _beggining)
+     {
+         beginning = _beggining;
++		added
+     }
+ 
+     int ContextContainer::getBefore() const
+@@ -291,12 +291,12 @@
+ 
+             }
+         }
+-        if (!rawDataOld.empty())//Co? zosta3o w old
++        if (!rawDataOld.empty())//Co? zosta?o w old
+         {
+             ContextList[ContextList.size() - 1].pushBack(rawDataOld.begin(), rawDataOld.end(), DT::lineStatus::Removed);
+             rawDataOld.erase(rawDataOld.begin(), rawDataOld.end());
+         }
+-        else if (!rawDataNew.empty())//Co? zosta3o w new
++        else if (!rawDataNew.empty())//Co? zosta?o w new
+         {
+             ContextList[ContextList.size() - 1].pushBack(rawDataNew.begin(), rawDataNew.end(), DT::lineStatus::Added);
+             rawDataNew.erase(rawDataNew.begin(), rawDataNew.end());
+@@ -341,14 +341,14 @@
+                 }
+                 else
+                 {
+-                    //Trzeba roziba element pod iteratorem last...
++                    //Trzeba rozib? element pod iteratorem last...
+                     if (!hasNewLineAtEndInNewFile && lastUnchangedForAdded != lastAdded)
+                     {
+                         breakDown(rowContainer, lastUnchangedForAdded);
+                         lastAdded = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Added; });
+                         lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
+                     }
+-                    //Trzeba rozbia element pod iteratorem last...
++                    //Trzeba rozbi? element pod iteratorem last...
+                     else if (!hasNewLineAtEndInOldFile && lastUnchangedForRemoved != lastRemoved)
+                     {
+                         breakDown(rowContainer, lastUnchangedForRemoved);
+\ No newline at end of file

@@ -94,6 +94,30 @@ void FontPickingWidget::onFontChoose()
 
 }
 ////////////////////////////////////////////////////
+BoolWidget::BoolWidget(QString label, QString key, QWidget* parrent) :QWidget(parrent), m_key(key)
+{
+    QHBoxLayout* container = new QHBoxLayout(this);
+    container->setSpacing(5);
+    container->setMargin(2);
+
+    container->addWidget(new QLabel(label, this));
+    m_Label = new QLabel(this);
+    m_Label->setMinimumSize(QSize(64, 16));
+    container->addWidget(m_Label);
+
+    QCheckBox* box = new QCheckBox(label,this);
+    connect(box, SIGNAL(stateChanged(int)), this, SLOT(StateChanged(int)));
+    box->setChecked(ConfigManager::getInstance().getBool(m_key));
+    container->addWidget(box);
+
+    setLayout(container);
+}
+
+void BoolWidget::StateChanged(int state)
+{
+    ConfigManager::getInstance().setBool(m_key, state == Qt::CheckState::Checked);
+}
+////////////////////////////////////////////////////
 ColorPickingWidget::ColorPickingWidget(QString label, QString key, QWidget* parrent):QWidget(parrent), m_key(key)
 {
     QHBoxLayout* container = new QHBoxLayout(this);
@@ -145,6 +169,9 @@ void DialogSettings::createRow(QString label, QString key, SettingsModel::keyTyp
         break;
     case SettingsModel::keyType::DiffGenerator:
         wdg->verticalLayout->addWidget(new CommandPickingWidget(label, key, this));
+        break;
+    case SettingsModel::keyType::Bool:
+        wdg->verticalLayout->addWidget(new BoolWidget(label, key, this));
         break;
     default:
         break;

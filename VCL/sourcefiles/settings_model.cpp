@@ -54,5 +54,6 @@ void SettingsModel::initialize()
     }
     addTreeItem(ConfigKeys::FontKey, keyType::Font);
     addTreeItem(ConfigKeys::GeneratorKey, keyType::DiffGenerator);
+    addTreeItem(ConfigKeys::TimerKey, keyType::Bool);
 
 }

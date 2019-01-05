@@ -20,7 +20,6 @@ private:
 	QSize m_oldFileViewSize;
 	QSize m_newFileViewSize;
     const CustomDelegate* m_del;
-    void dumpBuffors(DT::diffRowData& _removed, DT::diffRowData& _added);
 public:
     enum version
     {

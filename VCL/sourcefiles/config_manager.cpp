@@ -39,6 +39,7 @@ std::map<ConfigKeys::Colors, QColor> ConfigKeys::colorsDefaults = {
 
 const QString ConfigKeys::FontKey = "Application/Font";
 const QString ConfigKeys::GeneratorKey = "Application/Diff Generator";
+const QString ConfigKeys::TimerKey = "Application/Execution Time";
 
 ConfigManager::ConfigManager()
 {
@@ -110,4 +111,14 @@ QString ConfigManager::getQString(const QString key)
 void ConfigManager::setQString(const QString key, const QString str)
 {
     settings->setValue(key, str);
+}
+
+bool ConfigManager::getBool(const QString key)
+{
+    return settings->value(key, false).toBool();
+}
+
+void ConfigManager::setBool(const QString key, const bool value)
+{
+    settings->setValue(key, value);
 }

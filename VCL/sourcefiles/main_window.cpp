@@ -11,6 +11,7 @@
 #include <queue>
 #include <fstream>
 #include <set>
+#include <time.h>
 
 #include <QDateTime>
 #include <QFileDialog>
@@ -251,6 +252,7 @@ void MainWindow::onDiffModelDataChange()
 
 void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _newFile, const QString & _diffFile, const DialogDiffGen::generatorType & _systemGenerator)
 {
+    clock_t execution = clock();
     switch (_systemGenerator)
     {
     case DialogDiffGen::generatorType::system:
@@ -302,10 +304,16 @@ void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _new
             }
         }
     break;
-
     default:
         break;
     }
+    double execution_time = double(clock() - execution) / CLOCKS_PER_SEC;
+    if (ConfigManager::getInstance().getBool(ConfigKeys::TimerKey))
+    {
+        QMessageBox(QMessageBox::Icon::NoIcon, "Execution time", "Execution time = " + QString::number(execution_time) + " seconds").exec();
+    }
+    
+    
 }
 
 void MainWindow::onSetRoot()
@@ -395,10 +403,17 @@ void MainWindow::onApplyDiff()
 #ifdef _DEBUG
         if (m_diffModel->loadFileAndDiff("D:/git/VersionControll/diff/test.cpp", "D:/git/VersionControll/diff/testp-u.diff"))
 #else
+        clock_t execution = clock();
         if (m_diffModel->loadFileAndDiff(applyDialog.getBasePath().toUtf8().constData(), applyDialog.getDiffPath().toUtf8().constData()))
 #endif
         {
+            double execution_time = double(clock() - execution) / CLOCKS_PER_SEC;
+            if (ConfigManager::getInstance().getBool(ConfigKeys::TimerKey))
+            {
+                QMessageBox(QMessageBox::Icon::NoIcon, "Execution time", "Execution time = " + QString::number(execution_time) + " seconds").exec();
+            }
             onDiffModelDataChange();
+
         }
         else
         {

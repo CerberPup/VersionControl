@@ -10,6 +10,7 @@
 class ConfigKeys
 {
 public:
+    static const QString TimerKey;
     static const QString FontKey;
     static const QString GeneratorKey;
     enum Colors
@@ -84,6 +85,8 @@ public:
     void setQFont(const QString key, const QFont font);
     QString getQString(const QString key);
     void setQString(const QString key, const QString str);
+    bool getBool(const QString key);
+    void setBool(const QString key, const bool value);
 ;};
 
 #endif // CONFIG_MANAGER_H
