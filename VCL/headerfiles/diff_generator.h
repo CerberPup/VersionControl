@@ -36,12 +36,12 @@ namespace DiffGenerator
         size_t getSize() const { return m_data.size(); }
     };
 
-    typedef std::pair<std::string, DT::lineStatus> data_t;
+    typedef std::pair<QString, DT::lineStatus> data_t;
     typedef std::list<data_t> rawContainer;
 
     class ContextContainer
     {
-        FifoContainer<std::string> begin;
+        FifoContainer<QString> begin;
         rawContainer dataElements;
         short missed;
         int beginning;
@@ -57,10 +57,10 @@ namespace DiffGenerator
         int getBefore() const;
         int getAfter() const;
         rawContainer getData();
-        bool pushBack(std::string _row, DT::lineStatus _status);
+        bool pushBack(QString _row, DT::lineStatus _status);
         bool pushBack(rawContainer& _newData);
-        void pushFront(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status);
-        void pushBack(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status);
+        void pushFront(std::list<QString>::iterator _begin, std::list<QString>::iterator _end, DT::lineStatus _status);
+        void pushBack(std::list<QString>::iterator _begin, std::list<QString>::iterator _end, DT::lineStatus _status);
     };
 
     class MagicInvoker
@@ -70,8 +70,8 @@ namespace DiffGenerator
 
         std::string oldFilePath;
         std::string newFilePath;
-        std::list<std::string> rawDataOld;
-        std::list<std::string> rawDataNew;
+        std::list<QString> rawDataOld;
+        std::list<QString> rawDataNew;
         std::vector<ContextContainer> ContextList;
 
         void doDiff();

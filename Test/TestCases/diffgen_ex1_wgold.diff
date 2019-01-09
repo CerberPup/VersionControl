@@ -1,6 +1,6 @@
 --- diffgen_ex1_base.txt	2018-11-12 10:00:36.875000000 +0100
 +++ diffgen_ex1_second.txt	2018-11-12 10:00:40.675000000 +0100
-@@ -1,1 +1,1 @@
+@@ -1 +1 @@
 -abc
 \ No newline at end of file
 +cde

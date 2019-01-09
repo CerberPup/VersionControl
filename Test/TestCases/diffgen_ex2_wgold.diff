@@ -1,6 +1,6 @@
 --- diffgen_ex2_base.txt	2018-11-12 13:46:16.942000000 +0100
-+++ diffgen_ex2_second.txt	2018-11-12 13:46:25.443000000 +0100
-@@ -1,7 +1,6 @@
++++ diffgen_ex2_second.txt	2019-01-09 14:35:12.070000000 +0100
+@@ -1,8 +1,9 @@
  a
  b
  c
@@ -8,11 +8,9 @@
  d
  e
  f
-@@ -9,1 +8,4 @@
 -g
 \ No newline at end of file
 +h
 +i
 +j
-+g
 \ No newline at end of file

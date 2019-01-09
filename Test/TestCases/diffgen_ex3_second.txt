@@ -30,7 +30,7 @@ namespace DiffGenerator
 
     int ContextContainer::getBeginning() const
     {
-        return beginningThingy;
+        return beginningThingy;//ś
     }
 
     void ContextContainer::setBeginning(const int _beggining)
@@ -291,12 +291,12 @@ namespace DiffGenerator
 
             }
         }
-        if (!rawDataOld.empty())//Co? zosta?o w old
+        if (!rawDataOld.empty())//Coś zostało w old
         {
             ContextList[ContextList.size() - 1].pushBack(rawDataOld.begin(), rawDataOld.end(), DT::lineStatus::Removed);
             rawDataOld.erase(rawDataOld.begin(), rawDataOld.end());
         }
-        else if (!rawDataNew.empty())//Co? zosta?o w new
+        else if (!rawDataNew.empty())//Coś zostało w new
         {
             ContextList[ContextList.size() - 1].pushBack(rawDataNew.begin(), rawDataNew.end(), DT::lineStatus::Added);
             rawDataNew.erase(rawDataNew.begin(), rawDataNew.end());
@@ -343,14 +343,14 @@ namespace DiffGenerator
                 }
                 else
                 {
-                    //Trzeba rozib? element pod iteratorem last...
+                    //Trzeba rozibć element pod iteratorem last...
                     if (!hasNewLineAtEndInNewFile && lastUnchangedForAdded != lastAdded)
                     {
                         breakDown(rowContainer, lastUnchangedForAdded);
                         lastAdded = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Added; });
                         lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
                     }
-                    //Trzeba rozbi? element pod iteratorem last...
+                    //Trzeba rozbić element pod iteratorem last...
                     else if (!hasNewLineAtEndInOldFile && lastUnchangedForRemoved != lastRemoved)
                     {
                         breakDown(rowContainer, lastUnchangedForRemoved);

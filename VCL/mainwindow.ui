@@ -174,7 +174,7 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>Menage</string>
+     <string>Manage</string>
     </property>
     <addaction name="separator"/>
     <addaction name="actionGenerate_patch"/>

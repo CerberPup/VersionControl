@@ -2,6 +2,28 @@
 #include <iostream>
 #include <list>
 
+#define N 10000
+namespace 
+{
+    int compareFile(FILE* f1, FILE* f2) {
+
+        char buf1[N];
+        char buf2[N];
+
+        do {
+            size_t r1 = fread(buf1, 1, N, f1);
+            size_t r2 = fread(buf2, 1, N, f2);
+
+            if (r1 != r2 ||
+                memcmp(buf1, buf2, r1)) {
+                return 0;  // Files are not equal
+            }
+        } while (!feof(f1) && !feof(f2));
+
+        return feof(f1) && feof(f2);
+    }
+
+}
 struct testInfo
 {
     QString Base;
@@ -102,9 +124,17 @@ void Tester::DiffGenerator()
     {
         
         QStringList arguments;
-        arguments << "-apply" << "-Generate" << "Program" << "-Input" << test.Base << "-Second" << test.Second << "-Output" << test.Output;
+        arguments << "-Generate" << "Program" << "-Input" << test.Base << "-Second" << test.Second << "-Output" << test.Output << "-nogui";
+        QString forDebug;
+        for (auto arg : arguments)
+        {
+            forDebug += " " + arg;
+        }
         myProcess->start(program, arguments);
         myProcess->waitForFinished(30000);
+        FILE* gold = fopen(test.Gold.toStdString().c_str(), "r");
+        FILE* out = fopen(test.Output.toStdString().c_str(), "r");
+        std::cout << std::boolalpha << (test.Base).toStdString() << " produces valid output: " << (compareFile(gold, out) == 1) << "\n";
     }
 }
 
@@ -132,9 +162,12 @@ void Tester::DiffApply()
     {
 
         QStringList arguments;
-        arguments << "-dump" << test.Output << "-Input" << test.Base << "-Second" << test.Second;
+        arguments << "-dump" << test.Output << "-Input" << test.Base << "-Second" << test.Second << "-nogui";
         myProcess->start(program, arguments);
         myProcess->waitForFinished(300000);
+        FILE* gold = fopen(test.Gold.toStdString().c_str(), "r");
+        FILE* out = fopen(test.Output.toStdString().c_str(), "r");
+        std::cout << std::boolalpha << (test.Base).toStdString() << " produces valid output: " << (compareFile(gold, out) == 1) << "\n";
     }
 }
 

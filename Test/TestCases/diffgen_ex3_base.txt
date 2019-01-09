@@ -291,12 +291,12 @@ namespace DiffGenerator
 
             }
         }
-        if (!rawDataOld.empty())//Coœ zosta³o w old
+        if (!rawDataOld.empty())//CoÅ› zostaÅ‚o w old
         {
             ContextList[ContextList.size() - 1].pushBack(rawDataOld.begin(), rawDataOld.end(), DT::lineStatus::Removed);
             rawDataOld.erase(rawDataOld.begin(), rawDataOld.end());
         }
-        else if (!rawDataNew.empty())//Coœ zosta³o w new
+        else if (!rawDataNew.empty())//CoÅ› zostaÅ‚o w new
         {
             ContextList[ContextList.size() - 1].pushBack(rawDataNew.begin(), rawDataNew.end(), DT::lineStatus::Added);
             rawDataNew.erase(rawDataNew.begin(), rawDataNew.end());
@@ -343,14 +343,14 @@ namespace DiffGenerator
                 }
                 else
                 {
-                    //Trzeba rozibæ element pod iteratorem last...
+                    //Trzeba rozibÄ‡ element pod iteratorem last...
                     if (!hasNewLineAtEndInNewFile && lastUnchangedForAdded != lastAdded)
                     {
                         breakDown(rowContainer, lastUnchangedForAdded);
                         lastAdded = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Added; });
                         lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
                     }
-                    //Trzeba rozbiæ element pod iteratorem last...
+                    //Trzeba rozbiÄ‡ element pod iteratorem last...
                     else if (!hasNewLineAtEndInOldFile && lastUnchangedForRemoved != lastRemoved)
                     {
                         breakDown(rowContainer, lastUnchangedForRemoved);

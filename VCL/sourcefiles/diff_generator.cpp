@@ -66,13 +66,13 @@ namespace DiffGenerator
 
     rawContainer ContextContainer::getData()
     {
-        std::list<std::string> tmp;
+        std::list<QString> tmp;
         while (begin.getSize() != 0)
         {
             tmp.push_back(begin.pop());
         }
 
-        for (std::list<std::string>::reverse_iterator it = tmp.rbegin(); it != tmp.rend(); it++)
+        for (std::list<QString>::reverse_iterator it = tmp.rbegin(); it != tmp.rend(); it++)
         {
             dataElements.push_front(std::make_pair(*it, DT::lineStatus::Unchanged));
         }
@@ -81,7 +81,7 @@ namespace DiffGenerator
     }
 
     //returns false when new container is needed
-    bool ContextContainer::pushBack(std::string _row, DT::lineStatus _status)
+    bool ContextContainer::pushBack(QString _row, DT::lineStatus _status)
     {
         if (dataElements.size() == 0 && _status == DT::lineStatus::Unchanged)
         {
@@ -106,7 +106,8 @@ namespace DiffGenerator
         {
             missed = 0;
         }
-
+        if (dataElements.size() == 0)
+            beginning--;
         if (_status == DT::lineStatus::Removed)
         {
             rawContainer::reverse_iterator it;
@@ -130,16 +131,16 @@ namespace DiffGenerator
         std::copy(_newData.begin(), _newData.end(), std::back_inserter(dataElements));
         return false;
     }
-    void ContextContainer::pushFront(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status)
+    void ContextContainer::pushFront(std::list<QString>::iterator _begin, std::list<QString>::iterator _end, DT::lineStatus _status)
     {
         missed = 0;
-        for (std::list<std::string>::iterator it = _end; it != _begin;)
+        for (std::list<QString>::iterator it = _end; it != _begin;)
         {
             --it;
             dataElements.push_front(std::make_pair(*it, _status));
         }
     }
-    void ContextContainer::pushBack(std::list<std::string>::iterator _begin, std::list<std::string>::iterator _end, DT::lineStatus _status)
+    void ContextContainer::pushBack(std::list<QString>::iterator _begin, std::list<QString>::iterator _end, DT::lineStatus _status)
     {
         missed = 0;
         if (_status == DT::Removed)
@@ -149,14 +150,14 @@ namespace DiffGenerator
             {
                 if(insertIterator->second == DT::Added)
                     insertIterator = std::next(insertIterator, 1);
-                for (std::list<std::string>::iterator it = _begin; it != _end; it++)
+                for (std::list<QString>::iterator it = _begin; it != _end; it++)
                 {
                     dataElements.emplace(insertIterator.base(), std::make_pair(*it, _status));
                 }
             }
             else
             {
-                for (std::list<std::string>::iterator it = _begin; it != _end; it++)
+                for (std::list<QString>::iterator it = _begin; it != _end; it++)
                 {
                     dataElements.push_back(std::make_pair(*it, _status));
                 }
@@ -164,7 +165,7 @@ namespace DiffGenerator
         }
         else
         {
-            for (std::list<std::string>::iterator it = _begin; it != _end; it++)
+            for (std::list<QString>::iterator it = _begin; it != _end; it++)
             {
                 dataElements.push_back(std::make_pair(*it, _status));
             }
@@ -177,12 +178,37 @@ namespace DiffGenerator
         : oldFilePath(_oldFilePath)
         , newFilePath(_newFilePath)
     {
-        std::string bufor;
         std::ifstream oldFile(_oldFilePath, std::ios::in);
         std::ifstream newFile(_newFilePath, std::ios::in);
         ContextList.push_back(ContextContainer());
+        QFile fileOld(_oldFilePath.c_str());
+        QFile fileNew(_newFilePath.c_str());
 
-        if (oldFile.good() && newFile.good())
+        if (fileOld.open(QIODevice::ReadOnly) && fileNew.open(QIODevice::ReadOnly))
+        {
+            QTextStream in(&fileOld);
+
+            while (!in.atEnd()) {
+                QString line = in.readLine();
+                rawDataOld.push_back(line);
+            }
+            fileOld.close();
+
+
+            QTextStream in2(&fileNew);
+
+            while (!in2.atEnd()) {
+                QString line = in2.readLine();
+                rawDataNew.push_back(line);
+            }
+            newFile.close();
+            hasNewLineAtEndInOldFile = *rawDataOld.crbegin() == "";
+            hasNewLineAtEndInNewFile = *rawDataNew.crbegin() == "";
+            doDiff();
+        }
+        
+
+        /*if (oldFile.good() && newFile.good())
         {
             while (!oldFile.eof())
             {
@@ -199,14 +225,21 @@ namespace DiffGenerator
             hasNewLineAtEndInOldFile = *rawDataOld.crbegin() == "";
             hasNewLineAtEndInNewFile = *rawDataNew.crbegin() == "";
             doDiff();
-        }
+        }*/
+
+        
+        /*if (!file.open(QIODevice::ReadOnly)) {
+            QMessageBox::information(0, "error", file.errorString());
+        }*/
+
+        
     }
 
     void MagicInvoker::doDiff()
     {
         int currentrow = 1;
-        std::list<std::string>::iterator it;
-        std::string currentStr;
+        std::list<QString>::iterator it;
+        QString currentStr;
         for (size_t i = 0; i < rawDataOld.size(); i++)
         {
             currentStr = *rawDataOld.begin();
@@ -249,9 +282,9 @@ namespace DiffGenerator
                     ContextList.pop_back();
                 }
                 //old[0] == itNew
-                std::list<std::string>::iterator itNew = std::find(rawDataNew.begin(), rawDataNew.end(), *rawDataOld.begin());
+                std::list<QString>::iterator itNew = std::find(rawDataNew.begin(), rawDataNew.end(), *rawDataOld.begin());
                 //new[0] == itOld
-                std::list<std::string>::iterator itOld = std::find(rawDataOld.begin(), rawDataOld.end(), *rawDataNew.begin());
+                std::list<QString>::iterator itOld = std::find(rawDataOld.begin(), rawDataOld.end(), *rawDataNew.begin());
                 if (itNew == rawDataNew.end() && itOld == rawDataOld.end()) // Nie znaleziono nic
                 {
                     ContextList[ContextList.size() - 1].pushBack(rawDataOld.front(), DT::lineStatus::Removed);
@@ -291,6 +324,13 @@ namespace DiffGenerator
 
             }
         }
+        if (ContextList.size()>1 && !ContextList[ContextList.size() - 1].hasData() && !ContextList[ContextList.size() - 1].hasForgottenData())
+        {
+            //Megre with previous
+            auto data = ContextList[ContextList.size() - 1].getData();
+            ContextList[ContextList.size() - 2].pushBack(data);
+            ContextList.pop_back();
+        }
         if (!rawDataOld.empty())//Coœ zosta³o w old
         {
             ContextList[ContextList.size() - 1].pushBack(rawDataOld.begin(), rawDataOld.end(), DT::lineStatus::Removed);
@@ -325,12 +365,19 @@ namespace DiffGenerator
             before = it->getBefore();
             after = it->getAfter();
             //if (prevBefore + prevBeginning != it->getBeginning())
+            if (it->getBeginning() == 0)
+            {
+                stream << "@@ -" << before << " +" << after << " @@" << endl;
+            }
+            else
+            {
                 stream << "@@ -" << it->getBeginning() << ',' << before << " +" << (it->getBeginning() + diffrence) << ',' << after << " @@" << endl;
+            }
             prevBeginning = it->getBeginning();
             prevBefore = before;
             auto rowContainer = it->getData();
             bool noLineAtEnd = false;
-            if (std::distance(it, ContextList.end()) == 1)
+            if (std::distance(it, ContextList.end()) == 1 && !lastContainerWasEmpty)
             {
                 auto lastAdded = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Added; });
                 auto lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
@@ -358,6 +405,7 @@ namespace DiffGenerator
                         lastRemoved = std::find_if(rowContainer.rbegin(), rowContainer.rend(), [](data_t &element)->bool {return element.second == DT::Removed; });
                     }
                 }
+
                 for (rawContainer::iterator row = rowContainer.begin(); row != rowContainer.end(); row++)
                 {
                     switch (row->second)
@@ -374,7 +422,7 @@ namespace DiffGenerator
                     default:
                         break;
                     }
-                    stream << row->first.c_str() << endl;
+                    stream << row->first << endl;
                     
                     if (!noLineAtEnd)
                     {
@@ -408,7 +456,7 @@ namespace DiffGenerator
                     default:
                         break;
                     }
-                    stream << row->first.c_str() << endl;
+                    stream << row->first << endl;
                 }
             }
             diffrence += after - before;

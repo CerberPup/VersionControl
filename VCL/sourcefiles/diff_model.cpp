@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <regex>
 #include <QMessageBox>
+#include <QTextStream>
 
 namespace
 {
@@ -394,64 +395,66 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
     std::list<QString>rawData;
     m_oldFileData.clear();
     m_newFileData.clear();
-    std::ifstream reader;
-    std::string bufor;
-    reader.open(File);
-    if (reader.good())
+
+    QFile baseFile(File.c_str());
+    QFile diffFile(DiffFile.c_str());
+
+    if (baseFile.open(QIODevice::ReadOnly))
     {
-        while (!reader.eof())
-        {
-            std::getline(reader, bufor);
-            bufor.insert(bufor.end(), '\n');
-            QString tmp = replaceTabs(QString(bufor.c_str()));
+        QTextStream in(&baseFile);
+
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            line += '\n';
+            QString tmp = replaceTabs(line);
             rawData.push_back(tmp);
         }
     }
-    reader.close();
-    reader.open(DiffFile);
+    baseFile.close();
+
     std::vector<SinglePatch> patches;
-    if (reader.good())
+
+    if (diffFile.open(QIODevice::ReadOnly))
     {
+        QTextStream in(&diffFile);
         bool afterSection = false;
 
-        std::getline(reader, bufor);
+        QString bufor = in.readLine();
 
-        std::regex pattern("^--- (.*)\\t");
-        std::smatch pieces_match;
-        std::regex_search(bufor, pieces_match, pattern);
-        m_sourceFileName = QString(pieces_match[1].str().c_str());
-        while (!reader.eof())
+        QRegularExpression re("^--- (.*)\\t");
+        QRegularExpressionMatch match = re.match(bufor);
+        if (match.hasMatch()) {
+            m_sourceFileName = match.captured(1);
+        }
+        while (!in.atEnd())
         {
             if (!afterSection)
-                std::getline(reader, bufor);
+                bufor = in.readLine();
             if (bufor[0] == '@' && bufor[1] == '@')
             {
                 SinglePatch patch;
                 bool nextSection = false;
-                while (!reader.eof() && !nextSection)
+                while (!in.atEnd() && !nextSection)
                 {
 
-                    std::getline(reader, bufor);
-                    bufor.insert(bufor.end(), '\n');
-                    switch (bufor[0])
+                    bufor = in.readLine();
+                    bufor += '\n';
+                    switch (bufor[0].toLatin1())
                     {
                     case ' ':
                     {
-                        bufor.erase(bufor.begin());
-                        patch.addLine(bufor.c_str(), DT::lineStatus::Unchanged);
+                        patch.addLine(bufor.mid(1), DT::lineStatus::Unchanged);
                         break;
                     }
                     case '-':
                     {
-                        bufor.erase(bufor.begin());
-                        patch.addLine(bufor.c_str(), DT::lineStatus::Removed);
+                        patch.addLine(bufor.mid(1), DT::lineStatus::Removed);
                         break;
                     }
 
                     case '+':
                     {
-                        bufor.erase(bufor.begin());
-                        patch.addLine(bufor.c_str(), DT::lineStatus::Added);
+                        patch.addLine(bufor.mid(1), DT::lineStatus::Added);
                         break;
                     }
                     case '\\':
@@ -459,20 +462,22 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
                         break;
                     }
                     default:
-                        patch.updateLocations(rawData);
-                        patches.push_back(patch);
+                        
                         //patch.apply(m_oldFileData, m_newFileData, rawData);
                         nextSection = true;
                         break;
                     }
+
                 }
+                patch.updateLocations(rawData);
+                patches.push_back(patch);
                 afterSection = true;
                 continue;
             }
             afterSection = false;
         }
     }
-    reader.close();
+    diffFile.close();
     //Reslove conflicts
     bool tryAgain = true;
     while (tryAgain)

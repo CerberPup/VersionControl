@@ -30,7 +30,7 @@ namespace DiffGenerator
 
     int ContextContainer::getBeginning() const
     {
-        return beginningThingy;
+        return beginningThingy;//œ
     }
 
     void ContextContainer::setBeginning(const int _beggining)

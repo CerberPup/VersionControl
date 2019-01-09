@@ -284,7 +284,7 @@ void MainWindow::generateDiffFile(const QString & _oldFile, const QString & _new
             QFileInfo newFileInfo(_newFile);
             QFile file(_diffFile);
             file.remove();
-            if (file.open(QIODevice::ReadWrite))
+            if (file.open(QIODevice::WriteOnly))
             {
                 QTextStream stream(&file);
 
@@ -352,10 +352,10 @@ void MainWindow::onCustomContextMenuDiff(const QPoint &point)
 	if (index.isValid()) {
         QMenu menu;
         DT::diffRowData data = index.data().value<DT::diffRowData>();
-        menu.addAction("Preffer left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::left); });
-        menu.addAction("Preffer right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::right); });
-        menu.addAction("Preffer left OVER right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::leftOnRight); });
-        menu.addAction("Preffer right OVER left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::RightOnLeft); });
+        menu.addAction("Prefer left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::left); });
+        menu.addAction("Prefer right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::right); });
+        menu.addAction("Prefer left OVER right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::leftOnRight); });
+        menu.addAction("Prefer right OVER left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::RightOnLeft); });
         menu.addSeparator();
         menu.addAction("Settings", this, SLOT(onSettingsRequest()));
         if (index.column()==1)//old view
@@ -433,7 +433,7 @@ void MainWindow::onSaveGeneratedFile()
 void MainWindow::SaveGeneratedFile(QString _file)
 {
     QFile file(_file);
-    if (file.open(QIODevice::ReadWrite)) {
+    if (file.open(QIODevice::WriteOnly)) {
         QTextStream stream(&file);
         std::list<QString> outputData = m_diffModel->getOutputFileData();
         std::list<QString>::iterator lastElement = --outputData.end();
@@ -444,4 +444,5 @@ void MainWindow::SaveGeneratedFile(QString _file)
         //if (lastElement != outputData.begin())
             stream << *lastElement;
     }
+    file.close();
 }
