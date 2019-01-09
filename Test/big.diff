@@ -1,0 +1,47 @@
+--- ../../big.txt	2019-01-09 18:02:08.577990600 +0100
++++ ../../big2.txt	2019-01-09 18:02:23.770135100 +0100
+@@ -9,9 +9,6 @@
+ This is line 9
+ This is line 10
+ This is line 11
+-This is line 12
+-This is line 13
+-This is line 14
+ This is line 15
+ This is line 16
+ This is line 17
+@@ -3927,7 +3924,7 @@
+ This is line 3927
+ This is line 3928
+ This is line 3929
+-This is line 3930
++This is line 3930asdasdasd
+ This is line 3931
+ This is line 3932
+ This is line 3933
+@@ -5002,6 +4999,7 @@
+ This is line 5002
+ This is line 5003
+ This is line 5004
++
+ This is line 5005
+ This is line 5006
+ This is line 5007
+@@ -6675,7 +6673,7 @@
+ This is line 6675
+ This is line 6676
+ This is line 6677
+-This is line 6678
++This is line 6678f
+ This is line 6679
+ This is line 6680
+ This is line 6681
+@@ -9966,7 +9964,7 @@
+ This is line 9966
+ This is line 9967
+ This is line 9968
+-This is line 9969
++This is line 9969s
+ This is line 9970
+ This is line 9971
+ This is line 9972

@@ -505,7 +505,7 @@ bool DiffModel::loadFileAndDiff(std::string File, std::string DiffFile)
     }
     if (patches.size()>0)
     {
-        QMessageBox(QMessageBox::Icon::Critical, "Fail", "Failed hunks: " + patches.size()).show();
+        QMessageBox(QMessageBox::Icon::Critical, "Fail", "\nFailed hunks: " + patches.size()).exec();
     }
     
 

@@ -1,0 +1,38 @@
+--- diffgen_ex4_base.txt	2019-01-09 17:04:36.926000000 +0100
++++ diffgen_ex4_second.txt	2019-01-09 17:12:45.504000000 +0100
+@@ -240,6 +240,7 @@
+                 
+             }
+             else
++			what?
+             {
+                 if (ContextList.size()>1 && !ContextList[ContextList.size() - 1].hasData() && !ContextList[ContextList.size() - 1].hasForgottenData())
+                 {
+@@ -2999,6 +3000,7 @@
+             tmp.push_back(begin.pop());
+         }
+ 
++        HALF FILE
+         for (std::list<std::string>::reverse_iterator it = tmp.rbegin(); it != tmp.rend(); it++)
+         {
+             dataElements.push_front(std::make_pair(*it, DT::lineStatus::Unchanged));
+@@ -6074,7 +6076,7 @@
+                 rawDataOld.pop_front();
+                 ContextList[ContextList.size() - 1].pushBack(currentStr, DT::lineStatus::Removed);
+             }
+-            currentrow++;
++            currentrow++; change
+         }
+         while (!rawDataOld.empty() && !rawDataNew.empty())
+         {
+@@ -6169,6 +6171,10 @@
+ 
+         int prevBeginning = 0;
+         int prevBefore = 0;
++few
++new
++lines
++here
+ 
+         for (std::vector<ContextContainer>::iterator it = ContextList.begin();it!= ContextList.end();it++)
+         {

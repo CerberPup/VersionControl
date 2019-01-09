@@ -133,7 +133,13 @@ void MainWindow::parseArguments(int argc, char *argv[])
     }
     if (apply && !noGui)
     {
+        clock_t execution = clock();
         m_diffModel->loadFileAndDiff(input, generator == DialogDiffGen::generatorType::invalid? second : output);
+        double execution_time = double(clock() - execution) / CLOCKS_PER_SEC;
+        if (ConfigManager::getInstance().getBool(ConfigKeys::TimerKey))
+        {
+            QMessageBox(QMessageBox::Icon::NoIcon, "Execution time", "Execution time = " + QString::number(execution_time) + " seconds").exec();
+        }
         onDiffModelDataChange();
     }
     if (dump.size()!=0)

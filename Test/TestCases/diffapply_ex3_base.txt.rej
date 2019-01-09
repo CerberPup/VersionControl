@@ -1,4 +1,4 @@
---- diffgen_ex3_base.txt	2019-01-09 17:04:44.128000000 +0100
+--- diffgen_ex3_base.txt	2019-01-09 13:23:52.510000000 +0100
 +++ diffgen_ex3_second.txt	2019-01-09 13:24:39.220000000 +0100
 @@ -15,7 +15,6 @@
      ContextContainer::ContextContainer() :begin(3)
@@ -13,7 +13,7 @@
      int ContextContainer::getBeginning() const
      {
 -        return beginning;
-+        return beginningThingy;//Å›
++        return beginningThingy;//œ
      }
  
      void ContextContainer::setBeginning(const int _beggining)
