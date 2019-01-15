@@ -54,6 +54,8 @@ HEADERS += \
 
 UI_DIR = GeneratedFiles/
 
+RESOURCES = resource.qrc
+
 FORMS += \
         mainwindow.ui \
         dialog_diffApply.ui \
