@@ -576,12 +576,12 @@ void DiffModel::setVersion(QModelIndex _index, version _how)
         std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
         *std::next(m_oldFileData.begin(), _index.row()) = *std::next(m_newFileData.begin(), _index.row());
         break;
-    case DiffModel::leftOnRight:
+    case DiffModel::rightAfterLeft:
         std::next(m_oldFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
         std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
         *std::next(m_newFileData.begin(), _index.row()) = (*std::next(m_oldFileData.begin(), _index.row()) += *std::next(m_newFileData.begin(), _index.row()));
         break;
-    case DiffModel::RightOnLeft:
+    case DiffModel::leftAfterRight:
         std::next(m_oldFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
         std::next(m_newFileData.begin(), _index.row())->setAll(DT::lineStatus::Unchanged);
         *std::next(m_newFileData.begin(), _index.row()) = (*std::next(m_newFileData.begin(), _index.row()) += *std::next(m_oldFileData.begin(), _index.row()));

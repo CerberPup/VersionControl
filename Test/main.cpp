@@ -172,4 +172,4 @@ void Tester::DiffApply()
 }
 
 QTEST_MAIN(Tester)
-#include "GeneratedFiles\Debug\main.moc"
+#include "GeneratedFiles\release\main.moc"

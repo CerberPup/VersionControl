@@ -360,13 +360,12 @@ void MainWindow::onCustomContextMenuDiff(const QPoint &point)
         DT::diffRowData data = index.data().value<DT::diffRowData>();
         menu.addAction("Prefer left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::left); });
         menu.addAction("Prefer right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::right); });
-        menu.addAction("Prefer left OVER right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::leftOnRight); });
-        menu.addAction("Prefer right OVER left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::RightOnLeft); });
+        menu.addAction("Prefer left after right", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::leftAfterRight); });
+        menu.addAction("Prefer right after left", m_diffModel, [this, index]() {m_diffModel->setVersion(index, DiffModel::version::rightAfterLeft); });
         menu.addSeparator();
         menu.addAction("Settings", this, SLOT(onSettingsRequest()));
         if (index.column()==1)//old view
         {
-           
             menu.exec(ui->OldListView->mapToGlobal(point));
         }
         else//new view

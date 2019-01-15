@@ -14,8 +14,8 @@
    <string>Patch Tool</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>Sprite thingy.png</normaloff>Sprite thingy.png</iconset>
+   <iconset resource="resource.qrc">
+    <normaloff>:/ico/Icon.ico</normaloff>:/ico/Icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -262,7 +262,9 @@
   <tabstop>DirectoryTreeView</tabstop>
   <tabstop>OldListView</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionExit</sender>

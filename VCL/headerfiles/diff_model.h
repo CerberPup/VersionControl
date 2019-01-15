@@ -25,8 +25,8 @@ public:
     {
         left = 0,
         right,
-        leftOnRight,
-        RightOnLeft
+        leftAfterRight,
+        rightAfterLeft
     };
 
 	DiffModel(QObject *parent, CustomDelegate *_delegate);
