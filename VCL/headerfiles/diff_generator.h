@@ -12,6 +12,7 @@
 
 namespace DiffGenerator
 {
+    //simple fifo container.
     template <class T> class FifoContainer
     {
         std::queue<T> m_data;
@@ -39,30 +40,35 @@ namespace DiffGenerator
     typedef std::pair<QString, DT::lineStatus> data_t;
     typedef std::list<data_t> rawContainer;
 
+    //conteiner containing single context block (hunk)
     class ContextContainer
     {
-        FifoContainer<QString> begin;
+        FifoContainer<QString> begin; //container for beggining of context
         rawContainer dataElements;
-        short missed;
-        int beginning;
-        bool forgottenData;
+        short missed; //counts unchanged lines after change
+        int beginning; //oldest remembered line number
+        bool forgottenData; //loaded over 3 items to begin variable
     public:
         ContextContainer();
 
-        bool hasForgottenData() const;
+        bool hasForgottenData() const; //forgottenData getter
 
         bool hasData() const;
+        //context wherabouts for diff hunk header
         int getBeginning() const;
         void setBeginning(const int _beggining);
         int getBefore() const;
         int getAfter() const;
+        //get dataElements
         rawContainer getData();
+        //add data
         bool pushBack(QString _row, DT::lineStatus _status);
         bool pushBack(rawContainer& _newData);
         void pushFront(std::list<QString>::iterator _begin, std::list<QString>::iterator _end, DT::lineStatus _status);
         void pushBack(std::list<QString>::iterator _begin, std::list<QString>::iterator _end, DT::lineStatus _status);
     };
 
+    //responsible for making diff
     class MagicInvoker
     {
         bool hasNewLineAtEndInOldFile;
@@ -77,7 +83,7 @@ namespace DiffGenerator
         void doDiff();
 
     public:
-        MagicInvoker(std::string _oldFilePath, std::string _newFilePath);
+        MagicInvoker(std::string _oldFilePath, std::string _newFilePath);//here magic happens
         void save(QTextStream& stream);
     };
 }

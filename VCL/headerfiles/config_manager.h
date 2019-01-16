@@ -7,6 +7,7 @@
 #include <QtCore/QSettings>
 #include <QtGui/QFont>
 
+//contains static variables used in ConfigManager
 class ConfigKeys
 {
 public:
@@ -57,7 +58,7 @@ public:
 };
 
 
-
+//Manages saving and reading variables from ini file
 class ConfigManager
 {
     
@@ -65,6 +66,7 @@ private:
     ConfigManager();
     ~ConfigManager();
 
+    //generate color keys in ini file
     void generate();
 
     QString configDirectory;
@@ -74,6 +76,8 @@ public:
     ConfigManager(ConfigManager const&) = delete;
     void operator=(ConfigManager const&) = delete;
     static ConfigManager& getInstance();
+
+    //initialize ini file
     void initialize(QString directory);
 
     QColor getQColor(const QString key);

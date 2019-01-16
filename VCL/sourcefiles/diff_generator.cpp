@@ -205,34 +205,7 @@ namespace DiffGenerator
             hasNewLineAtEndInOldFile = *rawDataOld.crbegin() == "";
             hasNewLineAtEndInNewFile = *rawDataNew.crbegin() == "";
             doDiff();
-        }
-        
-
-        /*if (oldFile.good() && newFile.good())
-        {
-            while (!oldFile.eof())
-            {
-                std::getline(oldFile, bufor);
-                rawDataOld.push_back(bufor);
-            }
-            oldFile.close();
-            while (!newFile.eof())
-            {
-                std::getline(newFile, bufor);
-                rawDataNew.push_back(bufor);
-            }
-            newFile.close();
-            hasNewLineAtEndInOldFile = *rawDataOld.crbegin() == "";
-            hasNewLineAtEndInNewFile = *rawDataNew.crbegin() == "";
-            doDiff();
-        }*/
-
-        
-        /*if (!file.open(QIODevice::ReadOnly)) {
-            QMessageBox::information(0, "error", file.errorString());
-        }*/
-
-        
+        }    
     }
 
     void MagicInvoker::doDiff()
@@ -331,12 +304,12 @@ namespace DiffGenerator
             ContextList[ContextList.size() - 2].pushBack(data);
             ContextList.pop_back();
         }
-        if (!rawDataOld.empty())//Coœ zosta³o w old
+        if (!rawDataOld.empty())//something left in old
         {
             ContextList[ContextList.size() - 1].pushBack(rawDataOld.begin(), rawDataOld.end(), DT::lineStatus::Removed);
             rawDataOld.erase(rawDataOld.begin(), rawDataOld.end());
         }
-        else if (!rawDataNew.empty())//Coœ zosta³o w new
+        else if (!rawDataNew.empty())//something left in new
         {
             ContextList[ContextList.size() - 1].pushBack(rawDataNew.begin(), rawDataNew.end(), DT::lineStatus::Added);
             rawDataNew.erase(rawDataNew.begin(), rawDataNew.end());
@@ -360,6 +333,7 @@ namespace DiffGenerator
 
         for (std::vector<ContextContainer>::iterator it = ContextList.begin();it!= ContextList.end();it++)
         {
+            //correct hunk header
             //@@ -row,after +(row+diffrencebefore),after @@
             
             before = it->getBefore();

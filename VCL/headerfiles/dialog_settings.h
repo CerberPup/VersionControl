@@ -11,6 +11,7 @@
 #include <QCheckBox>
 
 //////////////////////////Containers/////////////////////////////////
+//widget for configuring generator settings
 class CommandPickingWidget :public QWidget, public Ui::DialogSettingsCommand
 {
     Q_OBJECT
@@ -29,6 +30,7 @@ public:
 
 };
 
+//checkbox widget with text
 class BoolWidget :public QWidget
 {
     Q_OBJECT
@@ -45,6 +47,7 @@ public slots:
 
 };
 
+//widget with button to select font
 class FontPickingWidget :public QWidget
 {
     Q_OBJECT
@@ -64,6 +67,7 @@ signals:
 
 };
 
+//widget with representation to set color
 class ColorPickingWidget :public QWidget
 {
     Q_OBJECT
@@ -80,20 +84,22 @@ private slots:
 };
 
 /////////////////////////////////////////////////////////////////////
-
 class DialogSettings : public QDialog, public Ui::DialogSettings
 {
     Q_OBJECT
 
 private:
     SettingsModel m_model;
-    Ui::DialogSettingsColor* wdg;
+    Ui::DialogSettingsColor* wdg; //main container
     QList<QHBoxLayout*> m_rows;
 
+    //add new row to wdg
     void createRow(QString label, QString key, SettingsModel::keyType type);
+    
 
 private slots:
-    void onSelectedItem(const QModelIndex &index);
+    void onSelectedItem(const QModelIndex &index); //react on key selection
+
 public:
     DialogSettings(QWidget *parent);
     ~DialogSettings();

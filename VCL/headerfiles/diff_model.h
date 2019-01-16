@@ -35,13 +35,13 @@ public:
     std::list<QString> getOutputFileData();
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	bool loadFileAndDiff(std::string File, std::string DiffFile);
+	bool loadFileAndDiff(std::string File, std::string DiffFile); //apply patch
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 	void setOldFileViewSize(QSize _size);
 	void setNewFileViewSize(QSize _size);
 
 public slots:
-    void setVersion(QModelIndex _index, version _how);
+    void setVersion(QModelIndex _index, version _how);//select wich row to save (old / new) or combination of them
 };
 
 #endif // !DIFFMODEL_H
